@@ -20,15 +20,15 @@ Complete feature plan for TraceAI - an AI-powered PCB design tool. Features are 
 - [ ] Delete account option
 
 ### 1.3 Pricing Page
-- [ ] Create `pricing.html`
-- [ ] Free, Pro, Enterprise tiers
-- [ ] Feature comparison table
+- [x] Create `pricing.html`
+- [x] Free, Pro, Enterprise tiers
+- [x] Feature comparison table
 - [ ] Stripe integration for payments (later)
 
 ### 1.4 Static Pages
-- [ ] Features page (`features.html`)
-- [ ] Documentation page (`docs.html`)
-- [ ] Contact/Support page
+- [x] Features page (`features.html`)
+- [x] Documentation page (`docs.html`)
+- [x] Contact/Support page
 
 ---
 
