@@ -210,6 +210,85 @@ async function resetPassword(email) {
     }
 }
 
+// ===== Project CRUD =====
+
+// Get all projects for a user
+async function getProjects(userId) {
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .select('*')
+            .eq('user_id', userId)
+            .order('updated_at', { ascending: false });
+
+        if (error) throw error;
+        return { data, error: null };
+    } catch (error) {
+        console.error('Get projects error:', error);
+        return { data: null, error };
+    }
+}
+
+// Create a new project
+async function createProject(userId, name, description) {
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .insert({
+                user_id: userId,
+                name: name,
+                description: description || null,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            })
+            .select()
+            .single();
+
+        if (error) throw error;
+        return { data, error: null };
+    } catch (error) {
+        console.error('Create project error:', error);
+        return { data: null, error };
+    }
+}
+
+// Update an existing project
+async function updateProject(projectId, updates) {
+    try {
+        const { data, error } = await supabase
+            .from('projects')
+            .update({
+                ...updates,
+                updated_at: new Date().toISOString()
+            })
+            .eq('id', projectId)
+            .select()
+            .single();
+
+        if (error) throw error;
+        return { data, error: null };
+    } catch (error) {
+        console.error('Update project error:', error);
+        return { data: null, error };
+    }
+}
+
+// Delete a project
+async function deleteProject(projectId) {
+    try {
+        const { error } = await supabase
+            .from('projects')
+            .delete()
+            .eq('id', projectId);
+
+        if (error) throw error;
+        return { data: true, error: null };
+    } catch (error) {
+        console.error('Delete project error:', error);
+        return { data: null, error };
+    }
+}
+
 // Helper to get redirect URL based on current environment
 function getRedirectUrl(page = 'profile.html') {
     const origin = window.location.origin;

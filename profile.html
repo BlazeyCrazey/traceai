@@ -142,7 +142,7 @@
             <div class="profile-main">
                 <div class="content-header">
                     <h1>My Projects</h1>
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" onclick="openNewProjectModal()">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
                             <line x1="12" y1="5" x2="12" y2="19"/>
                             <line x1="5" y1="12" x2="19" y2="12"/>
@@ -151,122 +151,8 @@
                     </button>
                 </div>
 
-                <!-- Projects Grid -->
-                <div class="projects-grid">
-                    <!-- Project Card -->
-                    <div class="project-card">
-                        <div class="project-preview">
-                            <svg viewBox="0 0 200 120" class="pcb-thumbnail">
-                                <rect x="5" y="5" width="190" height="110" rx="4" fill="#1a472a" stroke="#2d5a3d"/>
-                                <path d="M20 30 H60 V60 H100" stroke="#c9a227" stroke-width="2" fill="none"/>
-                                <path d="M100 60 H140 V90 H180" stroke="#c9a227" stroke-width="2" fill="none"/>
-                                <circle cx="100" cy="60" r="4" fill="#c9a227"/>
-                                <rect x="15" y="22" width="16" height="16" rx="2" fill="#2a2a2a" stroke="#555"/>
-                                <rect x="170" y="82" width="16" height="16" rx="2" fill="#2a2a2a" stroke="#555"/>
-                            </svg>
-                        </div>
-                        <div class="project-info">
-                            <h3>Arduino Shield v2</h3>
-                            <p>Modified 2 days ago</p>
-                        </div>
-                        <div class="project-actions">
-                            <button class="action-btn" title="Open">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-                                    <polyline points="15,3 21,3 21,9"/>
-                                    <line x1="10" y1="14" x2="21" y2="3"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn" title="More">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="1"/>
-                                    <circle cx="19" cy="12" r="1"/>
-                                    <circle cx="5" cy="12" r="1"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Project Card -->
-                    <div class="project-card">
-                        <div class="project-preview">
-                            <svg viewBox="0 0 200 120" class="pcb-thumbnail">
-                                <rect x="5" y="5" width="190" height="110" rx="4" fill="#1a472a" stroke="#2d5a3d"/>
-                                <rect x="70" y="35" width="60" height="50" rx="2" fill="#1a1a1a" stroke="#444"/>
-                                <text x="100" y="65" text-anchor="middle" fill="#666" font-size="10">ESP32</text>
-                                <path d="M30 50 H70" stroke="#c9a227" stroke-width="2" fill="none"/>
-                                <path d="M130 50 H170" stroke="#c9a227" stroke-width="2" fill="none"/>
-                                <path d="M30 70 H70" stroke="#c9a227" stroke-width="2" fill="none"/>
-                                <path d="M130 70 H170" stroke="#c9a227" stroke-width="2" fill="none"/>
-                            </svg>
-                        </div>
-                        <div class="project-info">
-                            <h3>ESP32 Dev Board</h3>
-                            <p>Modified 1 week ago</p>
-                        </div>
-                        <div class="project-actions">
-                            <button class="action-btn" title="Open">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-                                    <polyline points="15,3 21,3 21,9"/>
-                                    <line x1="10" y1="14" x2="21" y2="3"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn" title="More">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="1"/>
-                                    <circle cx="19" cy="12" r="1"/>
-                                    <circle cx="5" cy="12" r="1"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Project Card -->
-                    <div class="project-card">
-                        <div class="project-preview">
-                            <svg viewBox="0 0 200 120" class="pcb-thumbnail">
-                                <rect x="5" y="5" width="190" height="110" rx="4" fill="#1a472a" stroke="#2d5a3d"/>
-                                <circle cx="50" cy="60" r="20" fill="none" stroke="#c9a227" stroke-width="2"/>
-                                <circle cx="150" cy="60" r="20" fill="none" stroke="#c9a227" stroke-width="2"/>
-                                <path d="M70 60 H130" stroke="#c9a227" stroke-width="2" fill="none"/>
-                                <circle cx="50" cy="60" r="5" fill="#c9a227"/>
-                                <circle cx="150" cy="60" r="5" fill="#c9a227"/>
-                            </svg>
-                        </div>
-                        <div class="project-info">
-                            <h3>Power Supply Unit</h3>
-                            <p>Modified 2 weeks ago</p>
-                        </div>
-                        <div class="project-actions">
-                            <button class="action-btn" title="Open">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
-                                    <polyline points="15,3 21,3 21,9"/>
-                                    <line x1="10" y1="14" x2="21" y2="3"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn" title="More">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <circle cx="12" cy="12" r="1"/>
-                                    <circle cx="19" cy="12" r="1"/>
-                                    <circle cx="5" cy="12" r="1"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- New Project Card -->
-                    <div class="project-card new-project">
-                        <div class="new-project-content">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="12" y1="5" x2="12" y2="19"/>
-                                <line x1="5" y1="12" x2="19" y2="12"/>
-                            </svg>
-                            <span>New Project</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Projects Grid (dynamically populated) -->
+                <div class="projects-grid" id="projectsGrid"></div>
             </div>
         </div>
     </main>
@@ -368,6 +254,104 @@
         </div>
     </div>
 
+    <!-- New Project Modal -->
+    <div class="modal-overlay" id="newProjectModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>New Project</h2>
+                <button class="modal-close" onclick="closeNewProjectModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newProjectName">Project Name</label>
+                    <input type="text" id="newProjectName" class="form-input" placeholder="My PCB Project" required>
+                </div>
+                <div class="form-group">
+                    <label for="newProjectDesc">Description <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+                    <textarea id="newProjectDesc" class="form-input form-textarea" placeholder="A brief description of your project..." rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeNewProjectModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createNewProject()">Create Project</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Project Modal -->
+    <div class="modal-overlay" id="renameProjectModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Rename Project</h2>
+                <button class="modal-close" onclick="closeRenameModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="renameProjectName">Project Name</label>
+                    <input type="text" id="renameProjectName" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="renameProjectDesc">Description <span style="color:var(--text-muted);font-weight:400">(optional)</span></label>
+                    <textarea id="renameProjectDesc" class="form-input form-textarea" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeRenameModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="renameProject()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirm Modal -->
+    <div class="modal-overlay" id="deleteProjectModal">
+        <div class="modal" style="max-width:400px">
+            <div class="modal-header">
+                <h2>Delete Project</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p style="color:var(--text-secondary);line-height:1.6">Delete <strong id="deleteProjectName"></strong>? This cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="deleteProjectConfirmed()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <button class="context-menu-item" onclick="contextRename()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Rename
+        </button>
+        <button class="context-menu-item context-menu-danger" onclick="contextDelete()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3,6 5,6 21,6"/>
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+            </svg>
+            Delete
+        </button>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="toast-icon">
@@ -384,6 +368,10 @@
         let currentUser = null;
         let currentProfile = null;
         let selectedAvatarFile = null;
+        let projectsList = [];
+        let contextProjectId = null;
+        let renameProjectId = null;
+        let deleteProjectId = null;
 
         // Initialize page
         (async function init() {
@@ -393,8 +381,8 @@
 
             currentUser = session.user;
 
-            // Load profile data
-            await loadProfile();
+            // Load profile data and projects in parallel
+            await Promise.all([loadProfile(), loadProjects()]);
 
             // Hide loader
             document.getElementById('pageLoader').style.display = 'none';
@@ -575,6 +563,10 @@
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeEditModal();
+                closeNewProjectModal();
+                closeRenameModal();
+                closeDeleteModal();
+                closeContextMenu();
             }
         });
 
@@ -690,6 +682,324 @@
             setTimeout(() => {
                 toast.classList.remove('active');
             }, 3000);
+        }
+        // ===== Project Management =====
+
+        // Time ago helper
+        function timeAgo(date) {
+            const now = new Date();
+            const past = new Date(date);
+            const seconds = Math.floor((now - past) / 1000);
+
+            if (seconds < 60) return 'just now';
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return minutes === 1 ? '1 minute ago' : `${minutes} minutes ago`;
+            const hours = Math.floor(minutes / 60);
+            if (hours < 24) return hours === 1 ? '1 hour ago' : `${hours} hours ago`;
+            const days = Math.floor(hours / 24);
+            if (days < 7) return days === 1 ? '1 day ago' : `${days} days ago`;
+            const weeks = Math.floor(days / 7);
+            if (weeks < 5) return weeks === 1 ? '1 week ago' : `${weeks} weeks ago`;
+            const months = Math.floor(days / 30);
+            if (months < 12) return months === 1 ? '1 month ago' : `${months} months ago`;
+            const years = Math.floor(days / 365);
+            return years === 1 ? '1 year ago' : `${years} years ago`;
+        }
+
+        // Load projects from DB
+        async function loadProjects() {
+            const { data, error } = await getProjects(currentUser.id);
+            if (error) {
+                console.error('Failed to load projects:', error);
+                projectsList = [];
+            } else {
+                projectsList = data || [];
+            }
+            renderProjects(projectsList);
+            updateProjectCount(projectsList.length);
+        }
+
+        // Update sidebar project count
+        function updateProjectCount(count) {
+            const countEl = document.querySelector('.sidebar-link.active .link-count');
+            if (countEl) countEl.textContent = count;
+        }
+
+        // Render project cards
+        function renderProjects(projects) {
+            const grid = document.getElementById('projectsGrid');
+
+            if (projects.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:48px;height:48px;color:var(--text-muted);margin-bottom:16px">
+                            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                        </svg>
+                        <h3 style="margin-bottom:8px;color:var(--text-secondary)">No projects yet</h3>
+                        <p style="color:var(--text-muted);margin-bottom:24px">Create your first project to get started.</p>
+                        <button class="btn btn-primary" onclick="openNewProjectModal()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon">
+                                <line x1="12" y1="5" x2="12" y2="19"/>
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                            </svg>
+                            Create Project
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+
+            projects.forEach(project => {
+                // Generate a simple deterministic SVG preview based on project id
+                const seed = project.id ? project.id.charCodeAt(0) + (project.id.charCodeAt(1) || 0) : 42;
+                const cx1 = 30 + (seed % 40);
+                const cy1 = 30 + (seed % 30);
+                const cx2 = 120 + (seed % 50);
+                const cy2 = 50 + (seed % 40);
+
+                html += `
+                    <div class="project-card" ondblclick="openProject('${project.id}')">
+                        <div class="project-preview" onclick="openProject('${project.id}')" style="cursor:pointer">
+                            <svg viewBox="0 0 200 120" class="pcb-thumbnail">
+                                <rect x="5" y="5" width="190" height="110" rx="4" fill="#1a472a" stroke="#2d5a3d"/>
+                                <path d="M${cx1} ${cy1} H${cx1 + 40} V${cy1 + 30} H${cx2}" stroke="#c9a227" stroke-width="2" fill="none"/>
+                                <circle cx="${cx1}" cy="${cy1}" r="4" fill="#c9a227"/>
+                                <circle cx="${cx2}" cy="${cy2}" r="4" fill="#c9a227"/>
+                                <rect x="${cx2 - 8}" y="${cy2 - 8}" width="16" height="16" rx="2" fill="#2a2a2a" stroke="#555"/>
+                            </svg>
+                        </div>
+                        <div class="project-info" onclick="openProject('${project.id}')" style="cursor:pointer">
+                            <h3>${escapeHtml(project.name)}</h3>
+                            <p>Modified ${timeAgo(project.updated_at)}</p>
+                        </div>
+                        <div class="project-actions">
+                            <button class="action-btn" title="Open" onclick="openProject('${project.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/>
+                                    <polyline points="15,3 21,3 21,9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                            </button>
+                            <button class="action-btn" title="More" onclick="toggleContextMenu(event, '${project.id}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1"/>
+                                    <circle cx="19" cy="12" r="1"/>
+                                    <circle cx="5" cy="12" r="1"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // New Project card at the end
+            html += `
+                <div class="project-card new-project" onclick="openNewProjectModal()">
+                    <div class="new-project-content">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>
+                        <span>New Project</span>
+                    </div>
+                </div>
+            `;
+
+            grid.innerHTML = html;
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Open project (placeholder - will navigate to editor later)
+        function openProject(id) {
+            window.location.href = `editor.html?id=${id}`;
+        }
+
+        // ===== New Project Modal =====
+        function openNewProjectModal() {
+            document.getElementById('newProjectName').value = '';
+            document.getElementById('newProjectDesc').value = '';
+            document.getElementById('newProjectModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('newProjectName').focus(), 100);
+        }
+
+        function closeNewProjectModal() {
+            document.getElementById('newProjectModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('newProjectModal').addEventListener('click', function(e) {
+            if (e.target === this) closeNewProjectModal();
+        });
+
+        async function createNewProject() {
+            const name = document.getElementById('newProjectName').value.trim();
+            const desc = document.getElementById('newProjectDesc').value.trim();
+
+            if (!name) {
+                document.getElementById('newProjectName').focus();
+                return;
+            }
+
+            const btn = document.querySelector('#newProjectModal .btn-primary');
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+
+            const { data, error } = await createProject(currentUser.id, name, desc);
+
+            if (error) {
+                showToast('Failed to create project: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Create Project';
+                return;
+            }
+
+            closeNewProjectModal();
+            showToast('Project created!', 'success');
+            await loadProjects();
+            btn.disabled = false;
+            btn.textContent = 'Create Project';
+        }
+
+        // ===== Rename Project Modal =====
+        function openRenameModal(id) {
+            renameProjectId = id;
+            const project = projectsList.find(p => p.id === id);
+            if (!project) return;
+
+            document.getElementById('renameProjectName').value = project.name || '';
+            document.getElementById('renameProjectDesc').value = project.description || '';
+            document.getElementById('renameProjectModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => document.getElementById('renameProjectName').focus(), 100);
+        }
+
+        function closeRenameModal() {
+            document.getElementById('renameProjectModal').classList.remove('active');
+            document.body.style.overflow = '';
+            renameProjectId = null;
+        }
+
+        document.getElementById('renameProjectModal').addEventListener('click', function(e) {
+            if (e.target === this) closeRenameModal();
+        });
+
+        async function renameProject() {
+            if (!renameProjectId) return;
+
+            const name = document.getElementById('renameProjectName').value.trim();
+            const desc = document.getElementById('renameProjectDesc').value.trim();
+
+            if (!name) {
+                document.getElementById('renameProjectName').focus();
+                return;
+            }
+
+            const btn = document.querySelector('#renameProjectModal .btn-primary');
+            btn.disabled = true;
+            btn.textContent = 'Saving...';
+
+            const { data, error } = await updateProject(renameProjectId, {
+                name: name,
+                description: desc || null
+            });
+
+            if (error) {
+                showToast('Failed to rename project: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Save Changes';
+                return;
+            }
+
+            closeRenameModal();
+            showToast('Project updated!', 'success');
+            await loadProjects();
+            btn.disabled = false;
+            btn.textContent = 'Save Changes';
+        }
+
+        // ===== Delete Project Modal =====
+        function confirmDeleteProject(id) {
+            deleteProjectId = id;
+            const project = projectsList.find(p => p.id === id);
+            if (!project) return;
+
+            document.getElementById('deleteProjectName').textContent = project.name;
+            document.getElementById('deleteProjectModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteProjectModal').classList.remove('active');
+            document.body.style.overflow = '';
+            deleteProjectId = null;
+        }
+
+        document.getElementById('deleteProjectModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDeleteModal();
+        });
+
+        async function deleteProjectConfirmed() {
+            if (!deleteProjectId) return;
+
+            const btn = document.querySelector('#deleteProjectModal .btn-danger');
+            btn.disabled = true;
+            btn.textContent = 'Deleting...';
+
+            const { error } = await deleteProject(deleteProjectId);
+
+            if (error) {
+                showToast('Failed to delete project: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = 'Delete';
+                return;
+            }
+
+            closeDeleteModal();
+            showToast('Project deleted', 'success');
+            await loadProjects();
+            btn.disabled = false;
+            btn.textContent = 'Delete';
+        }
+
+        // ===== Context Menu =====
+        function toggleContextMenu(event, id) {
+            event.stopPropagation();
+            contextProjectId = id;
+            const menu = document.getElementById('contextMenu');
+            const btn = event.currentTarget;
+            const rect = btn.getBoundingClientRect();
+
+            menu.style.top = (rect.bottom + 4) + 'px';
+            menu.style.left = (rect.left) + 'px';
+            menu.classList.add('active');
+
+            // Close on next outside click
+            setTimeout(() => {
+                document.addEventListener('click', closeContextMenu, { once: true });
+            }, 0);
+        }
+
+        function closeContextMenu() {
+            document.getElementById('contextMenu').classList.remove('active');
+        }
+
+        function contextRename() {
+            closeContextMenu();
+            if (contextProjectId) openRenameModal(contextProjectId);
+        }
+
+        function contextDelete() {
+            closeContextMenu();
+            if (contextProjectId) confirmDeleteProject(contextProjectId);
         }
     </script>
 </body>
