@@ -710,6 +710,18 @@
     flex: 1;
 }
 
+.social-input-row {
+    flex-wrap: wrap;
+}
+
+.input-hint {
+    width: 100%;
+    padding-left: 52px;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: -4px;
+}
+
 /* ===== Toast Notification ===== */
 .toast {
     position: fixed;
