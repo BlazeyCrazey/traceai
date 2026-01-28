@@ -1,0 +1,27 @@
+() = Optional
+<> = Varable
+[] = Button
+
+Other main page:
+
+--------------------
+| <USER_ICON>      |
+|                  |
+| <USERNAME>       |
+| <EMAIL>          |
+|                  |
+|------------------|
+||PLAN:           ||
+||----------------||
+||<PLAN> <TRIAL?> ||
+||[UPGRADE]       ||
+|------------------|
+|<PROJECTS>        |
+|<LIBRARYS>        |
+|                  |
+|(YOUTUBE)         |
+|(GITHUB)          |
+|(WEBSITE)         |
+|                  |
+| [Edit Profile]   |
+--------------------

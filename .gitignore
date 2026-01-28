@@ -1,0 +1,10 @@
+# Ignore the separate auth-hosted repo
+auth-hosted/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
