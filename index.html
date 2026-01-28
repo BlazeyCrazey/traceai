@@ -6,12 +6,13 @@
     <title>TraceAI - AI-Powered PCB Design</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
                     <circle cx="12" cy="12" r="3" fill="currentColor"/>
@@ -22,16 +23,24 @@
                     <circle cx="20" cy="20" r="4" fill="currentColor"/>
                 </svg>
                 <span>TraceAI</span>
-            </div>
+            </a>
             <ul class="nav-links">
-                <li><a href="#" class="active">Home</a></li>
+                <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="#">Features</a></li>
                 <li><a href="#">Pricing</a></li>
                 <li><a href="#">Docs</a></li>
             </ul>
-            <div class="nav-buttons">
+            <!-- Logged out state -->
+            <div class="nav-buttons" id="navLoggedOut">
                 <a href="auth.html" class="btn btn-ghost">Sign In</a>
                 <a href="auth.html" class="btn btn-primary">Get Started</a>
+            </div>
+            <!-- Logged in state -->
+            <div class="nav-buttons" id="navLoggedIn" style="display:none">
+                <button class="btn btn-ghost" onclick="signOut()">Sign Out</button>
+                <a href="profile.html" class="nav-avatar" id="navAvatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="User" id="navAvatarImg">
+                </a>
             </div>
         </div>
     </nav>
@@ -296,5 +305,21 @@
             </div>
         </div>
     </footer>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        (async function() {
+            const session = await getSession();
+            if (session) {
+                document.getElementById('navLoggedOut').style.display = 'none';
+                document.getElementById('navLoggedIn').style.display = 'flex';
+
+                const user = session.user;
+                const meta = user.user_metadata || {};
+                const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+                document.getElementById('navAvatarImg').src = avatarUrl;
+            }
+        })();
+    </script>
 </body>
 </html>
