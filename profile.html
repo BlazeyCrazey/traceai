@@ -539,7 +539,11 @@
             }
 
             if (currentProfile.website_url) {
-                webLink.href = currentProfile.website_url;
+                let siteUrl = currentProfile.website_url;
+                if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//i.test(siteUrl)) {
+                    siteUrl = 'https://' + siteUrl;
+                }
+                webLink.href = siteUrl;
                 webLink.style.display = 'flex';
             } else {
                 webLink.style.display = 'none';
