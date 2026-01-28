@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - TraceAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
+    <style>
+        /* Contact page styles */
+        .contact-hero {
+            text-align: center;
+            padding: 140px 24px 64px;
+            position: relative;
+        }
+        .contact-hero h1 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .contact-hero p {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* Contact grid */
+        .contact-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        /* Form */
+        .contact-form {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+        }
+        .contact-form h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .contact-form .form-group {
+            margin-bottom: 20px;
+        }
+        .contact-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        .contact-form input,
+        .contact-form select,
+        .contact-form textarea {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: var(--text-muted);
+        }
+        .contact-form input:focus,
+        .contact-form select:focus,
+        .contact-form textarea:focus {
+            border-color: var(--accent-primary);
+        }
+        .contact-form select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2371717a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .contact-form .btn-primary {
+            width: 100%;
+            padding: 13px;
+            font-size: 15px;
+        }
+
+        /* Form success state */
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .form-success svg {
+            width: 48px;
+            height: 48px;
+            color: var(--success);
+            margin-bottom: 16px;
+        }
+        .form-success h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .form-success p {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* Info cards */
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .info-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            transition: all var(--transition-normal);
+        }
+        .info-card:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        .info-card-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .info-card-icon svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+        .info-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .info-card p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        .info-card a {
+            color: var(--accent-secondary);
+            transition: color var(--transition-fast);
+        }
+        .info-card a:hover {
+            color: var(--text-primary);
+        }
+
+        /* FAQ section */
+        .faq-section {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px 100px;
+        }
+        .faq-section h2 {
+            text-align: center;
+            font-size: clamp(24px, 3vw, 36px);
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            overflow: hidden;
+            background: var(--bg-card);
+        }
+        .faq-question {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 18px 20px;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            text-align: left;
+            transition: background var(--transition-fast);
+        }
+        .faq-question:hover {
+            background: var(--bg-hover);
+        }
+        .faq-chevron {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: transform var(--transition-fast);
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+        .faq-item.open .faq-chevron {
+            transform: rotate(180deg);
+        }
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-normal);
+        }
+        .faq-answer-inner {
+            padding: 0 20px 18px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .contact-section {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                    <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                </svg>
+                <span>TraceAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="docs.html">Docs</a></li>
+            </ul>
+            <!-- Logged out state -->
+            <div class="nav-buttons" id="navLoggedOut">
+                <a href="auth.html" class="btn btn-ghost">Sign In</a>
+                <a href="auth.html" class="btn btn-primary">Get Started</a>
+            </div>
+            <!-- Logged in state -->
+            <div class="nav-buttons" id="navLoggedIn" style="display:none">
+                <button class="btn btn-ghost" onclick="signOut()">Sign Out</button>
+                <a href="profile.html" class="nav-avatar" id="navAvatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="User" id="navAvatarImg">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="contact-hero">
+        <div class="hero-bg">
+            <div class="grid-pattern"></div>
+            <div class="glow glow-1"></div>
+        </div>
+        <div style="position:relative">
+            <h1>Get in <span class="gradient-text">Touch</span></h1>
+            <p>Have a question, feature request, or partnership inquiry? We'd love to hear from you.</p>
+        </div>
+    </section>
+
+    <!-- Contact Grid -->
+    <section class="contact-section">
+        <!-- Form -->
+        <div class="contact-form" id="contactForm">
+            <h2>Send a Message</h2>
+            <form id="contactFormEl" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contactName">Name</label>
+                        <input type="text" id="contactName" placeholder="Your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Email</label>
+                        <input type="email" id="contactEmail" placeholder="you@example.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="contactSubject">Subject</label>
+                    <select id="contactSubject" required>
+                        <option value="" disabled selected>Choose a topic</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="support">Technical Support</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="enterprise">Enterprise / Sales</option>
+                        <option value="partnership">Partnership</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="contactMessage">Message</label>
+                    <textarea id="contactMessage" placeholder="Tell us more..." rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="contactSubmitBtn">Send Message</button>
+            </form>
+
+            <!-- Success state -->
+            <div class="form-success" id="formSuccess">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+                    <polyline points="22,4 12,14.01 9,11.01"/>
+                </svg>
+                <h3>Message Sent!</h3>
+                <p>Thanks for reaching out. We'll get back to you within 24 hours.</p>
+            </div>
+        </div>
+
+        <!-- Info Cards -->
+        <div class="contact-info">
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                </div>
+                <h3>Email</h3>
+                <p>For general inquiries and support:<br><a href="mailto:support@traceai.dev">support@traceai.dev</a></p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                    </svg>
+                </div>
+                <h3>Community Discord</h3>
+                <p>Join our Discord server to chat with other users, share designs, and get real-time help.<br><a href="#">discord.gg/traceai</a></p>
+            </div>
+            <div class="info-card">
+                <div class="info-card-icon">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                </div>
+                <h3>GitHub</h3>
+                <p>Report bugs, request features, or contribute to our open-source components.<br><a href="#">github.com/traceai</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Is TraceAI free to use?
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Yes! TraceAI offers a free tier that includes unlimited public projects and up to 3 private projects. The free plan gives you full access to the schematic editor, PCB layout editor, and AI assistant. Paid plans add more private projects, priority AI processing, and team collaboration features.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Which browsers are supported?
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    TraceAI works in all modern browsers: Chrome, Edge, Firefox, and Safari. For the best experience with WebGL-accelerated rendering, we recommend Chrome or Edge. Mobile browsers are supported for viewing designs but editing is optimized for desktop.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Can I import KiCad or Eagle files?
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Yes. TraceAI can import KiCad (.kicad_pcb, .kicad_sch) and Eagle (.brd, .sch) project files. Component libraries in KiCad and Eagle formats can also be imported into your personal library. We're actively working on Altium import support.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                How does the AI assistant work?
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    The AI assistant is powered by Claude and has been fine-tuned on electronics design data. It can see your current schematic and PCB layout, understand circuit topology, and generate or modify designs based on natural-language instructions. It also has access to component datasheets and design best practices.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Is my design data secure?
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    Absolutely. All data is encrypted in transit (TLS 1.3) and at rest (AES-256). Private projects are only accessible to you and people you explicitly share them with. We do not use your designs to train AI models. Enterprise customers can opt for dedicated infrastructure with SOC 2 compliance.
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-item">
+            <button class="faq-question">
+                Which PCB manufacturers are supported?
+                <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="faq-answer">
+                <div class="faq-answer-inner">
+                    TraceAI has direct integration with JLCPCB, PCBWay, and OSH Park. You can get instant quotes and submit orders without leaving the app. For other manufacturers, you can export standard Gerber RS-274X and Excellon drill files that work with any PCB fab house worldwide.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                            <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                            <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                            <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                            <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                            <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                        </svg>
+                        <span>TraceAI</span>
+                    </div>
+                    <p>AI-powered PCB design for the modern engineer.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Changelog</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TraceAI. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Auth state + auto-fill
+        (async function() {
+            const session = await getSession();
+            if (session) {
+                document.getElementById('navLoggedOut').style.display = 'none';
+                document.getElementById('navLoggedIn').style.display = 'flex';
+
+                const user = session.user;
+                const meta = user.user_metadata || {};
+                const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+                document.getElementById('navAvatarImg').src = avatarUrl;
+
+                // Auto-fill name and email
+                const name = meta.full_name || meta.name || meta.display_name || '';
+                if (name) document.getElementById('contactName').value = name;
+                document.getElementById('contactEmail').value = user.email || '';
+            }
+        })();
+
+        // FAQ toggle
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const item = this.parentElement;
+                const answer = item.querySelector('.faq-answer');
+                const isOpen = item.classList.contains('open');
+
+                // Close all
+                document.querySelectorAll('.faq-item.open').forEach(openItem => {
+                    openItem.classList.remove('open');
+                    openItem.querySelector('.faq-answer').style.maxHeight = '0';
+                });
+
+                // Open clicked (if it wasn't already open)
+                if (!isOpen) {
+                    item.classList.add('open');
+                    answer.style.maxHeight = answer.scrollHeight + 'px';
+                }
+            });
+        });
+
+        // Form submit handler
+        document.getElementById('contactFormEl').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value.trim();
+
+            if (!name || !email || !subject || !message) return;
+
+            const btn = document.getElementById('contactSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            // Simulate send (no backend yet)
+            setTimeout(function() {
+                document.getElementById('contactFormEl').style.display = 'none';
+                document.querySelector('.contact-form h2').style.display = 'none';
+                document.getElementById('formSuccess').style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Send Message';
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

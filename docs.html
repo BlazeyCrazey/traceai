@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - TraceAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="docs.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                    <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                </svg>
+                <span>TraceAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="docs.html" class="active">Docs</a></li>
+            </ul>
+            <!-- Logged out state -->
+            <div class="nav-buttons" id="navLoggedOut">
+                <a href="auth.html" class="btn btn-ghost">Sign In</a>
+                <a href="auth.html" class="btn btn-primary">Get Started</a>
+            </div>
+            <!-- Logged in state -->
+            <div class="nav-buttons" id="navLoggedIn" style="display:none">
+                <button class="btn btn-ghost" onclick="signOut()">Sign Out</button>
+                <a href="profile.html" class="nav-avatar" id="navAvatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="User" id="navAvatarImg">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="docs-page">
+        <!-- Sidebar -->
+        <aside class="docs-sidebar">
+            <div class="docs-search">
+                <div class="docs-search-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" placeholder="Search docs..." id="docsSearchInput">
+                </div>
+            </div>
+            <nav>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">Getting Started</span>
+                    <a href="#overview" class="docs-nav-link active">Overview</a>
+                    <a href="#create-account" class="docs-nav-link">Create an Account</a>
+                    <a href="#first-project" class="docs-nav-link">Your First Project</a>
+                    <a href="#editor-overview" class="docs-nav-link">Editor Overview</a>
+                </div>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">Editor Basics</span>
+                    <a href="#canvas-navigation" class="docs-nav-link">Canvas Navigation</a>
+                    <a href="#toolbar" class="docs-nav-link">Toolbar</a>
+                    <a href="#keyboard-shortcuts" class="docs-nav-link">Keyboard Shortcuts</a>
+                </div>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">Components</span>
+                    <a href="#placing-components" class="docs-nav-link">Placing Components</a>
+                    <a href="#editing-properties" class="docs-nav-link">Editing Properties</a>
+                    <a href="#custom-components" class="docs-nav-link">Custom Components</a>
+                </div>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">Schematic Design</span>
+                    <a href="#creating-schematics" class="docs-nav-link">Creating Schematics</a>
+                    <a href="#wiring" class="docs-nav-link">Wiring</a>
+                    <a href="#net-labels" class="docs-nav-link">Net Labels</a>
+                </div>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">PCB Layout</span>
+                    <a href="#board-setup" class="docs-nav-link">Board Setup</a>
+                    <a href="#routing" class="docs-nav-link">Routing</a>
+                    <a href="#layers-stackup" class="docs-nav-link">Layers &amp; Stackup</a>
+                    <a href="#drc" class="docs-nav-link">Design Rule Check</a>
+                </div>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">AI Assistant</span>
+                    <a href="#using-chat" class="docs-nav-link">Using the Chat</a>
+                    <a href="#ai-commands" class="docs-nav-link">Commands</a>
+                    <a href="#ai-tips" class="docs-nav-link">Tips &amp; Best Practices</a>
+                </div>
+                <div class="docs-nav-group">
+                    <span class="docs-nav-label">Export &amp; Manufacturing</span>
+                    <a href="#file-formats" class="docs-nav-link">File Formats</a>
+                    <a href="#manufacturer-integration" class="docs-nav-link">Manufacturer Integration</a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="docs-content">
+            <h1>TraceAI Documentation</h1>
+            <p>Everything you need to design, validate, and manufacture PCBs with TraceAI.</p>
+
+            <!-- Getting Started -->
+            <h2 id="overview">Overview</h2>
+            <p>TraceAI is a browser-based PCB design tool that combines a professional schematic and layout editor with an AI assistant powered by Claude. You can go from idea to production-ready Gerber files without installing any software.</p>
+            <p>The editor runs entirely in your browser. Projects are saved to the cloud automatically, so you can pick up your work from any machine.</p>
+
+            <div class="docs-callout">
+                <strong>Tip</strong>
+                <p>TraceAI works best in Chrome, Edge, or Firefox. Safari is supported but WebGL performance may vary on older macOS versions.</p>
+            </div>
+
+            <h2 id="create-account">Create an Account</h2>
+            <p>Head to the <a href="auth.html" style="color:var(--accent-secondary)">sign-up page</a> and create an account with your email or sign in with Google or GitHub. Free accounts include unlimited public projects and up to 3 private projects.</p>
+            <ol>
+                <li>Click <strong>Get Started</strong> in the top-right corner.</li>
+                <li>Enter your email and choose a password, or click the Google / GitHub button.</li>
+                <li>Verify your email address (check your spam folder if you don't see it).</li>
+                <li>You'll be redirected to your project dashboard — you're ready to go.</li>
+            </ol>
+
+            <h2 id="first-project">Your First Project</h2>
+            <p>From the dashboard, click <strong>New Project</strong>. Give it a name and optional description, then click <strong>Create Project</strong>. The editor opens with an empty schematic sheet and the component browser on the left.</p>
+            <p>A quick way to get started is to type a request into the AI chat panel on the right:</p>
+            <div class="docs-code">Create a simple LED blinker circuit using a 555 timer</div>
+            <p>The AI will place components, wire them together, and explain the circuit. You can then modify the design or move directly to PCB layout.</p>
+
+            <h2 id="editor-overview">Editor Overview</h2>
+            <p>The editor is split into four areas:</p>
+            <ul>
+                <li><strong>Toolbar</strong> (top) — Mode selection, undo/redo, zoom controls, and design rule check.</li>
+                <li><strong>Component Browser</strong> (left) — Searchable library of schematic symbols and PCB footprints.</li>
+                <li><strong>Canvas</strong> (center) — The main drawing area for schematics and PCB layouts.</li>
+                <li><strong>AI Panel</strong> (right) — Chat interface for the AI assistant. Collapsible.</li>
+            </ul>
+
+            <div class="docs-callout">
+                <strong>Tip</strong>
+                <p>Press <kbd>Tab</kbd> to cycle focus between the canvas and the AI chat input, so you can alternate between drawing and asking questions without touching the mouse.</p>
+            </div>
+
+            <!-- Editor Basics -->
+            <h2 id="canvas-navigation">Canvas Navigation</h2>
+            <p>The canvas supports standard pan and zoom gestures:</p>
+            <ul>
+                <li><strong>Pan</strong> — Middle-click drag, or hold <kbd>Space</kbd> and left-click drag.</li>
+                <li><strong>Zoom</strong> — Scroll wheel, or pinch on a trackpad. The canvas zooms toward the cursor.</li>
+                <li><strong>Fit to view</strong> — Press <kbd>F</kbd> to frame all objects, or <kbd>Shift</kbd>+<kbd>F</kbd> to frame the selection.</li>
+            </ul>
+
+            <h2 id="toolbar">Toolbar</h2>
+            <p>The toolbar changes depending on whether you are in Schematic or PCB mode. Common actions are always available:</p>
+            <ul>
+                <li><strong>Select</strong> (<kbd>V</kbd>) — Default mode. Click to select, drag to box-select.</li>
+                <li><strong>Wire / Trace</strong> (<kbd>W</kbd>) — Draw wires (schematic) or traces (PCB).</li>
+                <li><strong>Place Component</strong> (<kbd>P</kbd>) — Opens the component search palette.</li>
+                <li><strong>Measure</strong> (<kbd>M</kbd>) — Measure distance between two points on the canvas.</li>
+                <li><strong>Undo / Redo</strong> — <kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>.</li>
+            </ul>
+
+            <h2 id="keyboard-shortcuts">Keyboard Shortcuts</h2>
+            <table class="docs-table">
+                <thead>
+                    <tr><th>Action</th><th>Shortcut</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Select mode</td><td><kbd>V</kbd></td></tr>
+                    <tr><td>Wire / Trace</td><td><kbd>W</kbd></td></tr>
+                    <tr><td>Place component</td><td><kbd>P</kbd></td></tr>
+                    <tr><td>Measure</td><td><kbd>M</kbd></td></tr>
+                    <tr><td>Rotate selected</td><td><kbd>R</kbd></td></tr>
+                    <tr><td>Mirror horizontal</td><td><kbd>X</kbd></td></tr>
+                    <tr><td>Mirror vertical</td><td><kbd>Y</kbd></td></tr>
+                    <tr><td>Delete selected</td><td><kbd>Delete</kbd> / <kbd>Backspace</kbd></td></tr>
+                    <tr><td>Duplicate</td><td><kbd>Ctrl</kbd>+<kbd>D</kbd></td></tr>
+                    <tr><td>Copy / Paste</td><td><kbd>Ctrl</kbd>+<kbd>C</kbd> / <kbd>Ctrl</kbd>+<kbd>V</kbd></td></tr>
+                    <tr><td>Undo / Redo</td><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd></td></tr>
+                    <tr><td>Fit to view</td><td><kbd>F</kbd></td></tr>
+                    <tr><td>Fit selection</td><td><kbd>Shift</kbd>+<kbd>F</kbd></td></tr>
+                    <tr><td>Toggle grid</td><td><kbd>G</kbd></td></tr>
+                    <tr><td>Run DRC</td><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd></td></tr>
+                    <tr><td>Save</td><td><kbd>Ctrl</kbd>+<kbd>S</kbd></td></tr>
+                    <tr><td>Focus AI chat</td><td><kbd>Tab</kbd></td></tr>
+                </tbody>
+            </table>
+
+            <!-- Components -->
+            <h2 id="placing-components">Placing Components</h2>
+            <p>Press <kbd>P</kbd> or click the <strong>Place Component</strong> button to open the search palette. Type a part name, value, or package description — for example "100nF 0402" or "ATmega328P".</p>
+            <ol>
+                <li>Select a component from the results list. A preview attaches to your cursor.</li>
+                <li>Press <kbd>R</kbd> to rotate before placing.</li>
+                <li>Click on the canvas to place the component. Click again to place another copy, or press <kbd>Esc</kbd> to finish.</li>
+            </ol>
+
+            <h2 id="editing-properties">Editing Properties</h2>
+            <p>Double-click any component to open its property editor. You can change:</p>
+            <ul>
+                <li><strong>Reference Designator</strong> — e.g., R1, C5, U3.</li>
+                <li><strong>Value</strong> — e.g., 10kΩ, 100nF, LM7805.</li>
+                <li><strong>Footprint</strong> — Switch between footprint variants (e.g., 0402, 0603, 0805).</li>
+                <li><strong>Custom fields</strong> — Manufacturer part number, supplier, notes.</li>
+            </ul>
+
+            <h2 id="custom-components">Custom Components</h2>
+            <p>If you need a part that isn't in the built-in library, you can create one:</p>
+            <ol>
+                <li>Open <strong>Library Manager</strong> from the sidebar.</li>
+                <li>Click <strong>New Component</strong> and choose Symbol + Footprint.</li>
+                <li>Draw your schematic symbol using the built-in shape tools (lines, arcs, pins).</li>
+                <li>Use the footprint wizard to define pads from a datasheet drawing, or import a KiCad <code>.kicad_mod</code> file.</li>
+                <li>Save the component to your personal library — it will appear in the search palette from now on.</li>
+            </ol>
+
+            <div class="docs-callout">
+                <strong>Tip</strong>
+                <p>You can also ask the AI: "Create a custom component for [part number]" and it will generate the symbol and footprint from the datasheet automatically.</p>
+            </div>
+
+            <!-- Schematic Design -->
+            <h2 id="creating-schematics">Creating Schematics</h2>
+            <p>Every project starts with a schematic. The schematic captures the logical connections between components before you think about physical layout.</p>
+            <ol>
+                <li>Place your main IC or module first — it anchors the design.</li>
+                <li>Add passive components (resistors, capacitors, decoupling caps).</li>
+                <li>Wire everything together, using net labels for power rails and long-distance connections.</li>
+                <li>Run Electrical Rules Check (ERC) to catch missing connections and conflicting pin types.</li>
+            </ol>
+
+            <h2 id="wiring">Wiring</h2>
+            <p>Press <kbd>W</kbd> to enter wire mode. Click a component pin to start a wire, click intermediate points to create bends, and click a destination pin to complete the connection. Wires snap to the grid and automatically form junctions when they cross existing wires at the same net.</p>
+            <p>To cancel a wire in progress, press <kbd>Esc</kbd>. To delete a wire segment, select it and press <kbd>Delete</kbd>.</p>
+
+            <h2 id="net-labels">Net Labels</h2>
+            <p>Net labels connect pins that share the same name without drawing a visible wire. This keeps complex schematics readable.</p>
+            <ul>
+                <li>Press <kbd>L</kbd> to add a net label. Type a name (e.g., <code>VCC</code>, <code>SDA</code>, <code>MOSI</code>) and place it on a wire or pin.</li>
+                <li>Use <strong>power symbols</strong> (VCC, GND, 3V3) from the component palette for supply rails.</li>
+                <li>All pins and wires sharing the same net label are electrically connected.</li>
+            </ul>
+
+            <!-- PCB Layout -->
+            <h2 id="board-setup">Board Setup</h2>
+            <p>Switch to PCB mode from the editor tab bar. If you haven't set up the board yet, the wizard will guide you through:</p>
+            <ol>
+                <li><strong>Board outline</strong> — Draw a rectangular or custom-shaped outline, or enter exact dimensions.</li>
+                <li><strong>Layer count</strong> — Choose 2, 4, or more layers. Default is 2-layer.</li>
+                <li><strong>Design rules</strong> — Set minimum trace width, clearance, via size, and other constraints based on your manufacturer.</li>
+            </ol>
+            <p>Components from the schematic appear as an unplaced "ratsnest" next to the board. Drag them onto the board and arrange them logically before routing.</p>
+
+            <h2 id="routing">Routing</h2>
+            <p>Press <kbd>W</kbd> in PCB mode to start routing traces. Click a pad to begin, route through the board, and click the destination pad to finish.</p>
+            <ul>
+                <li>The interactive router <strong>pushes and shoves</strong> existing traces to make room.</li>
+                <li>Press <kbd>V</kbd> during routing to insert a via and switch layers.</li>
+                <li>Hold <kbd>Shift</kbd> to route in 45-degree increments.</li>
+                <li>For differential pairs, select both nets and use <strong>Route Differential Pair</strong> from the toolbar.</li>
+            </ul>
+
+            <h2 id="layers-stackup">Layers &amp; Stackup</h2>
+            <p>Open <strong>Board Setup &gt; Stackup</strong> to configure your layer structure. For a standard 4-layer board:</p>
+            <ul>
+                <li><strong>Top copper</strong> — Signal layer (components and traces).</li>
+                <li><strong>Inner 1</strong> — Ground plane.</li>
+                <li><strong>Inner 2</strong> — Power plane.</li>
+                <li><strong>Bottom copper</strong> — Signal layer.</li>
+            </ul>
+            <p>You can customize dielectric thickness and copper weight. The editor uses this information for impedance calculations and DRC.</p>
+
+            <h2 id="drc">Design Rule Check</h2>
+            <p>Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> or click the DRC button to run a full check. The DRC verifies:</p>
+            <ul>
+                <li><strong>Clearance</strong> — Copper-to-copper, copper-to-edge, and drill-to-drill spacing.</li>
+                <li><strong>Connectivity</strong> — All schematic nets are fully routed (no unconnected pads).</li>
+                <li><strong>Annular ring</strong> — Via and pad annular rings meet minimum requirements.</li>
+                <li><strong>Trace width</strong> — No trace is narrower than the minimum specified in design rules.</li>
+                <li><strong>Silk overlap</strong> — Silkscreen does not overlap exposed copper.</li>
+            </ul>
+            <p>Violations appear as markers on the canvas and in a list. Click a violation to zoom to it.</p>
+
+            <!-- AI Assistant -->
+            <h2 id="using-chat">Using the AI Chat</h2>
+            <p>The AI panel on the right side of the editor accepts natural-language requests. You can ask it to:</p>
+            <ul>
+                <li>Create circuits from a description ("design a 5V to 3.3V regulator").</li>
+                <li>Explain how a selected sub-circuit works.</li>
+                <li>Suggest component values for a given specification.</li>
+                <li>Review your design for common mistakes.</li>
+                <li>Auto-route remaining unconnected nets.</li>
+            </ul>
+            <p>The AI sees your current schematic and PCB state, so it can give context-aware answers.</p>
+
+            <h2 id="ai-commands">Commands</h2>
+            <p>In addition to free-form chat, you can use slash commands for common actions:</p>
+            <table class="docs-table">
+                <thead>
+                    <tr><th>Command</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>/route</code></td><td>Auto-route all remaining unconnected nets.</td></tr>
+                    <tr><td><code>/review</code></td><td>Run an AI design review and list potential issues.</td></tr>
+                    <tr><td><code>/explain</code></td><td>Explain the selected component or sub-circuit.</td></tr>
+                    <tr><td><code>/suggest [description]</code></td><td>Recommend components matching a description.</td></tr>
+                    <tr><td><code>/optimize</code></td><td>Suggest layout improvements for signal integrity and thermal performance.</td></tr>
+                    <tr><td><code>/bom</code></td><td>Generate and display the Bill of Materials.</td></tr>
+                    <tr><td><code>/drc</code></td><td>Run Design Rule Check and summarize results.</td></tr>
+                    <tr><td><code>/export [format]</code></td><td>Export the project (gerber, pdf, svg, bom).</td></tr>
+                </tbody>
+            </table>
+
+            <h2 id="ai-tips">Tips &amp; Best Practices</h2>
+            <ul>
+                <li>Be specific: "Add a 100nF decoupling cap on U3 VCC pin" works better than "add a capacitor."</li>
+                <li>Ask the AI to explain before you override its suggestions — it may have considered constraints you missed.</li>
+                <li>Use <code>/review</code> after major changes. The AI catches issues like missing pull-ups, incorrect bypass cap placement, and thermal relief problems.</li>
+                <li>The AI respects your design rules. If it can't route a trace within your constraints, it will tell you what to change.</li>
+            </ul>
+
+            <div class="docs-callout">
+                <strong>Tip</strong>
+                <p>You can reference components by their designator in chat: "Move R12 closer to U3 pin 7" or "What is C4 for?"</p>
+            </div>
+
+            <!-- Export & Manufacturing -->
+            <h2 id="file-formats">File Formats</h2>
+            <p>TraceAI can export your design in several formats:</p>
+            <ul>
+                <li><strong>Gerber RS-274X</strong> — Industry-standard PCB fabrication files (one per layer).</li>
+                <li><strong>Excellon drill</strong> — NC drill file for hole positions and sizes.</li>
+                <li><strong>PDF</strong> — Printable schematic and layout sheets.</li>
+                <li><strong>SVG</strong> — Scalable vector graphics for documentation.</li>
+                <li><strong>BOM (CSV / Excel)</strong> — Bill of Materials with part numbers, quantities, and references.</li>
+                <li><strong>Pick-and-place</strong> — Component centroid file for automated assembly.</li>
+            </ul>
+            <p>Go to <strong>File &gt; Export</strong> or use the <code>/export</code> command. The Gerber preview shows each layer so you can verify before downloading.</p>
+
+            <h2 id="manufacturer-integration">Manufacturer Integration</h2>
+            <p>TraceAI integrates directly with popular PCB manufacturers:</p>
+            <ul>
+                <li><strong>JLCPCB</strong> — Get instant quotes, upload Gerbers, and order with assembly.</li>
+                <li><strong>PCBWay</strong> — Direct order submission with automatic file validation.</li>
+                <li><strong>OSH Park</strong> — Shared-run ordering for prototype quantities.</li>
+            </ul>
+            <p>Click <strong>Order PCB</strong> in the export panel, choose your manufacturer, and configure options (layer count, finish, thickness). TraceAI generates the correct file package and opens the manufacturer's order page with your files pre-uploaded.</p>
+
+            <div class="docs-callout">
+                <strong>Tip</strong>
+                <p>Set your preferred manufacturer in <strong>Project Settings</strong> and TraceAI will tailor DRC rules to match their capabilities, reducing the chance of fabrication issues.</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Auth state
+        (async function() {
+            const session = await getSession();
+            if (session) {
+                document.getElementById('navLoggedOut').style.display = 'none';
+                document.getElementById('navLoggedIn').style.display = 'flex';
+
+                const user = session.user;
+                const meta = user.user_metadata || {};
+                const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+                document.getElementById('navAvatarImg').src = avatarUrl;
+            }
+        })();
+
+        // Scrollspy — highlight active sidebar link based on scroll position
+        (function() {
+            const links = document.querySelectorAll('.docs-nav-link');
+            const sections = [];
+
+            links.forEach(link => {
+                const id = link.getAttribute('href').slice(1);
+                const el = document.getElementById(id);
+                if (el) sections.push({ id, el, link });
+            });
+
+            function updateActive() {
+                let current = sections[0];
+                const scrollTop = window.scrollY + 120;
+
+                for (const section of sections) {
+                    if (section.el.offsetTop <= scrollTop) {
+                        current = section;
+                    }
+                }
+
+                links.forEach(l => l.classList.remove('active'));
+                if (current) current.link.classList.add('active');
+            }
+
+            window.addEventListener('scroll', updateActive, { passive: true });
+            updateActive();
+        })();
+
+        // Smooth scroll for sidebar links
+        document.querySelectorAll('.docs-nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const id = this.getAttribute('href').slice(1);
+                const target = document.getElementById(id);
+                if (target) {
+                    window.scrollTo({
+                        top: target.offsetTop - 90,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Search filter for sidebar
+        document.getElementById('docsSearchInput').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            document.querySelectorAll('.docs-nav-group').forEach(group => {
+                const links = group.querySelectorAll('.docs-nav-link');
+                let anyVisible = false;
+                links.forEach(link => {
+                    const match = link.textContent.toLowerCase().includes(query);
+                    link.style.display = match ? '' : 'none';
+                    if (match) anyVisible = true;
+                });
+                group.style.display = anyVisible ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>

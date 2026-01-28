@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Features - TraceAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                    <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                </svg>
+                <span>TraceAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html" class="active">Features</a></li>
+                <li><a href="#">Pricing</a></li>
+                <li><a href="docs.html">Docs</a></li>
+            </ul>
+            <!-- Logged out state -->
+            <div class="nav-buttons" id="navLoggedOut">
+                <a href="auth.html" class="btn btn-ghost">Sign In</a>
+                <a href="auth.html" class="btn btn-primary">Get Started</a>
+            </div>
+            <!-- Logged in state -->
+            <div class="nav-buttons" id="navLoggedIn" style="display:none">
+                <button class="btn btn-ghost" onclick="signOut()">Sign Out</button>
+                <a href="profile.html" class="nav-avatar" id="navAvatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="User" id="navAvatarImg">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section (compact) -->
+    <section class="hero" style="min-height:auto;padding:140px 24px 80px">
+        <div class="hero-bg">
+            <div class="grid-pattern"></div>
+            <div class="glow glow-1"></div>
+            <div class="glow glow-2"></div>
+        </div>
+        <div class="hero-content" style="margin-bottom:0">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                Everything you need to design PCBs
+            </div>
+            <h1>Powerful PCB Design,<br><span class="gradient-text">Simplified by AI</span></h1>
+            <p class="hero-subtitle">
+                From AI-assisted routing to one-click manufacturing exports, TraceAI gives you professional-grade tools that accelerate every stage of your workflow.
+            </p>
+        </div>
+    </section>
+
+    <!-- AI-Powered Design -->
+    <section class="features" style="background:var(--bg-secondary)">
+        <div class="container">
+            <div class="section-header">
+                <h2><span class="gradient-text">AI-Powered</span> Design</h2>
+                <p>Let intelligent automation handle the tedious work so you can focus on innovation</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3>Auto-Routing</h3>
+                    <p>AI analyzes your netlist and automatically routes traces with optimal path selection, respecting clearance rules, differential pairs, and impedance targets.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <h3>Component Suggestions</h3>
+                    <p>Describe what you need in plain English and the AI recommends components from our library, complete with datasheets and availability status.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 11l3 3L22 4"/>
+                            <path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
+                        </svg>
+                    </div>
+                    <h3>Design Review</h3>
+                    <p>The AI reviews your entire board for signal integrity issues, thermal hotspots, and manufacturing pitfalls — then suggests specific fixes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Circuit Explanations</h3>
+                    <p>Select any part of your schematic and ask the AI to explain how it works. Great for learning, onboarding teammates, or documenting designs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schematic Editor -->
+    <section class="features" style="background:var(--bg-primary)">
+        <div class="container">
+            <div class="section-header">
+                <h2>Schematic <span class="gradient-text">Editor</span></h2>
+                <p>Capture your circuit ideas with a fast, intuitive schematic tool</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 3a2.828 2.828 0 114 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+                        </svg>
+                    </div>
+                    <h3>Wire Drawing</h3>
+                    <p>Click-to-place wiring with automatic junction detection. Wires snap to pins and route around components for clean, readable schematics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M9 9h6v6H9z"/>
+                        </svg>
+                    </div>
+                    <h3>Symbol Placement</h3>
+                    <p>Drag and drop from the component browser or use the quick-search palette. Symbols rotate, mirror, and align with keyboard shortcuts.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 7h16M4 12h16M4 17h10"/>
+                        </svg>
+                    </div>
+                    <h3>Net Labels</h3>
+                    <p>Name your nets to connect distant pins without visible wires. Power flags, ground symbols, and bus notation keep large designs manageable.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 3 21 3 21 8"/>
+                            <line x1="4" y1="20" x2="21" y2="3"/>
+                            <polyline points="21 16 21 21 16 21"/>
+                            <line x1="15" y1="15" x2="21" y2="21"/>
+                            <line x1="4" y1="4" x2="9" y2="9"/>
+                        </svg>
+                    </div>
+                    <h3>Schematic-to-PCB Sync</h3>
+                    <p>Changes in the schematic propagate to the PCB layout automatically. Bidirectional cross-probing highlights matching components instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PCB Layout Editor -->
+    <section class="features" style="background:var(--bg-secondary)">
+        <div class="container">
+            <div class="section-header">
+                <h2>PCB Layout <span class="gradient-text">Editor</span></h2>
+                <p>Professional board layout with real-time design rule checking</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <h3>Multi-Layer Support</h3>
+                    <p>Design boards with up to 32 copper layers. Toggle layer visibility, set custom colors, and define stackups for controlled impedance designs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                        </svg>
+                    </div>
+                    <h3>Trace Routing</h3>
+                    <p>Interactive router pushes and shoves existing traces, hugs obstacles, and maintains clearance automatically. Supports differential pair and length matching.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <h3>Design Rule Check</h3>
+                    <p>Real-time DRC highlights clearance violations, unconnected nets, and manufacturing issues as you route. Fix problems before they reach the fab.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <circle cx="12" cy="12" r="8"/>
+                            <line x1="12" y1="1" x2="12" y2="4"/>
+                            <line x1="12" y1="20" x2="12" y2="23"/>
+                        </svg>
+                    </div>
+                    <h3>Via Management</h3>
+                    <p>Place through-hole, blind, and buried vias. The editor calculates annular rings and checks drill-to-copper clearance against your manufacturer's capabilities.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Component Library -->
+    <section class="features" style="background:var(--bg-primary)">
+        <div class="container">
+            <div class="section-header">
+                <h2>Component <span class="gradient-text">Library</span></h2>
+                <p>Access a massive parts database without leaving the editor</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                        </svg>
+                    </div>
+                    <h3>50K+ Built-in Components</h3>
+                    <p>Resistors, capacitors, ICs, connectors, and more — each with verified schematic symbols, PCB footprints, and 3D models ready to use.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Custom Libraries</h3>
+                    <p>Build your own component libraries with our footprint wizard. Import KiCad, Eagle, or Altium libraries directly — no manual conversion needed.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+                            <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+                        </svg>
+                    </div>
+                    <h3>Integrated Datasheets</h3>
+                    <p>View datasheets, pinouts, and application circuits without switching apps. The AI can summarize key specs and highlight relevant parameters.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Collaboration -->
+    <section class="features" style="background:var(--bg-secondary)">
+        <div class="container">
+            <div class="section-header">
+                <h2>Real-Time <span class="gradient-text">Collaboration</span></h2>
+                <p>Work with your team as if you were in the same room</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 010 7.75"/>
+                        </svg>
+                    </div>
+                    <h3>Real-Time Editing</h3>
+                    <p>Multiple team members can edit the same board simultaneously. Color-coded cursors show who is working where, and changes merge automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0110 0v4"/>
+                        </svg>
+                    </div>
+                    <h3>Sharing Controls</h3>
+                    <p>Share projects with view-only or edit permissions. Generate public links for design reviews or lock projects to prevent accidental changes.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h3>Version History</h3>
+                    <p>Every save creates a snapshot. Compare any two versions side-by-side, see what changed, and restore previous states with a single click.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Export & Manufacturing -->
+    <section class="features" style="background:var(--bg-primary)">
+        <div class="container">
+            <div class="section-header">
+                <h2>Export & <span class="gradient-text">Manufacturing</span></h2>
+                <p>Go from finished design to fabricated board with minimal effort</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                    </div>
+                    <h3>Gerber / Drill Export</h3>
+                    <p>Generate industry-standard Gerber RS-274X and Excellon drill files. Preview each layer before exporting to catch issues early.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                            <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                        </svg>
+                    </div>
+                    <h3>BOM Generation</h3>
+                    <p>Auto-generate a Bill of Materials with part numbers, quantities, and supplier links. Export as CSV, Excel, or share directly with your purchasing team.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                            <line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                    </div>
+                    <h3>One-Click Ordering</h3>
+                    <p>Send your design directly to supported manufacturers — JLCPCB, PCBWay, OSH Park, and more. Get instant quotes without leaving TraceAI.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to Build Your Next Board?</h2>
+                <p>Start designing for free — no credit card required</p>
+                <div class="cta-buttons">
+                    <a href="auth.html" class="btn btn-primary btn-large">Start Designing Free</a>
+                    <a href="contact.html" class="btn btn-ghost btn-large">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                            <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                            <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                            <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                            <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                            <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                        </svg>
+                        <span>TraceAI</span>
+                    </div>
+                    <p>AI-powered PCB design for the modern engineer.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Changelog</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TraceAI. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        (async function() {
+            const session = await getSession();
+            if (session) {
+                document.getElementById('navLoggedOut').style.display = 'none';
+                document.getElementById('navLoggedIn').style.display = 'flex';
+
+                const user = session.user;
+                const meta = user.user_metadata || {};
+                const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+                document.getElementById('navAvatarImg').src = avatarUrl;
+            }
+        })();
+    </script>
+</body>
+</html>
