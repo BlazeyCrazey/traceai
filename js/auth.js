@@ -79,7 +79,7 @@ async function getSession() {
 }
 
 // Create user profile in database
-async function createProfile(userId, displayName, email) {
+async function createProfile(userId, displayName, email, avatarUrl) {
     try {
         const { data, error } = await supabase
             .from('profiles')
@@ -87,12 +87,14 @@ async function createProfile(userId, displayName, email) {
                 id: userId,
                 display_name: displayName,
                 email: email,
-                avatar_url: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+                avatar_url: avatarUrl || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
                 plan: 'free',
                 plan_status: 'active',
                 created_at: new Date().toISOString(),
                 updated_at: new Date().toISOString()
-            });
+            }, { onConflict: 'id' })
+            .select()
+            .single();
 
         if (error) throw error;
         return { data, error: null };

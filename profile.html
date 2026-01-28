@@ -403,24 +403,58 @@
             document.getElementById('pageLoader').style.display = 'none';
         })();
 
+        // Extract best display name from OAuth metadata
+        function getOAuthDisplayName(user) {
+            const meta = user.user_metadata || {};
+            return meta.full_name || meta.name || meta.display_name || meta.user_name || meta.preferred_username || user.email.split('@')[0];
+        }
+
+        // Extract best avatar URL from OAuth metadata
+        function getOAuthAvatarUrl(user) {
+            const meta = user.user_metadata || {};
+            return meta.avatar_url || meta.picture || null;
+        }
+
         // Load user profile
         async function loadProfile() {
+            const oauthName = getOAuthDisplayName(currentUser);
+            const oauthAvatar = getOAuthAvatarUrl(currentUser);
+
             const { data: profile, error } = await getProfile(currentUser.id);
 
             if (error || !profile) {
                 // Create profile if it doesn't exist
-                await createProfile(
+                const { data: created } = await createProfile(
                     currentUser.id,
-                    currentUser.user_metadata?.display_name || currentUser.email.split('@')[0],
-                    currentUser.email
+                    oauthName,
+                    currentUser.email,
+                    oauthAvatar
                 );
-                // Retry loading
-                const retry = await getProfile(currentUser.id);
-                if (retry.data) {
-                    currentProfile = retry.data;
+                currentProfile = created || null;
+                // Fallback retry if upsert didn't return data
+                if (!currentProfile) {
+                    const retry = await getProfile(currentUser.id);
+                    if (retry.data) currentProfile = retry.data;
                 }
             } else {
                 currentProfile = profile;
+
+                // Sync OAuth avatar/name if profile still has defaults
+                const isDicebear = currentProfile.avatar_url && currentProfile.avatar_url.includes('dicebear.com');
+                const updates = {};
+
+                if (isDicebear && oauthAvatar) {
+                    updates.avatar_url = oauthAvatar;
+                }
+                if ((!currentProfile.display_name || currentProfile.display_name === currentUser.email.split('@')[0]) && oauthName !== currentUser.email.split('@')[0]) {
+                    updates.display_name = oauthName;
+                }
+
+                if (Object.keys(updates).length > 0) {
+                    const { data: updated } = await updateProfile(currentUser.id, updates);
+                    if (updated) currentProfile = updated;
+                    else currentProfile = { ...currentProfile, ...updates };
+                }
             }
 
             // Update UI with profile data
@@ -431,7 +465,7 @@
         function updateUI() {
             if (!currentProfile) return;
 
-            const avatarUrl = currentProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+            const avatarUrl = currentProfile.avatar_url || getOAuthAvatarUrl(currentUser) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
 
             // Update avatars
             document.getElementById('sidebarAvatar').src = avatarUrl;
@@ -539,11 +573,14 @@
 
             try {
                 // Upload avatar if selected
+                let newAvatarUrl = null;
                 if (selectedAvatarFile) {
                     const { url, error: uploadError } = await uploadAvatar(currentUser.id, selectedAvatarFile);
                     if (uploadError) {
                         console.error('Avatar upload failed:', uploadError);
                         showToast('Failed to upload avatar', 'error');
+                    } else {
+                        newAvatarUrl = url;
                     }
                 }
 
@@ -557,16 +594,22 @@
                     website_url: socialInputs[2].value || null
                 };
 
-                // Update profile in database
+                // Update profile in database (skip if only avatar changed, since uploadAvatar already saved it)
                 const { data, error } = await updateProfile(currentUser.id, updates);
 
                 if (error) {
                     throw error;
                 }
 
-                // Update local profile and UI
-                currentProfile = { ...currentProfile, ...updates };
-                if (data) currentProfile = data;
+                // Merge everything: DB response + avatar if newly uploaded
+                if (data) {
+                    currentProfile = data;
+                } else {
+                    currentProfile = { ...currentProfile, ...updates };
+                }
+                if (newAvatarUrl) {
+                    currentProfile.avatar_url = newAvatarUrl;
+                }
 
                 updateUI();
                 closeEditModal();
