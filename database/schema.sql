@@ -185,5 +185,149 @@ CREATE TRIGGER update_libraries_updated_at
     FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
 -- ============================================
+-- 7. CONTACT SUBMISSIONS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.contact_submissions (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    title TEXT NOT NULL,
+    subject TEXT NOT NULL,
+    message TEXT NOT NULL,
+    status TEXT DEFAULT 'unread' CHECK (status IN ('unread', 'read', 'resolved')),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS for contact_submissions
+ALTER TABLE public.contact_submissions ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Anyone can insert (submit contact form)
+CREATE POLICY "Anyone can submit contact form"
+    ON public.contact_submissions
+    FOR INSERT
+    WITH CHECK (true);
+
+-- Policy: Only admin can view submissions (check by email in auth.users)
+CREATE POLICY "Admin can view submissions"
+    ON public.contact_submissions
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'blazerkey106@gmail.com'
+        )
+    );
+
+-- Policy: Only admin can update submissions
+CREATE POLICY "Admin can update submissions"
+    ON public.contact_submissions
+    FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'blazerkey106@gmail.com'
+        )
+    );
+
+-- Policy: Only admin can delete submissions
+CREATE POLICY "Admin can delete submissions"
+    ON public.contact_submissions
+    FOR DELETE
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'blazerkey106@gmail.com'
+        )
+    );
+
+-- ============================================
+-- 8. FORUM POSTS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.forum_posts (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    category TEXT NOT NULL CHECK (category IN ('general', 'showcase', 'help', 'feedback', 'tutorials')),
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    is_pinned BOOLEAN DEFAULT false,
+    upvotes INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS for forum_posts
+ALTER TABLE public.forum_posts ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Anyone can view forum posts
+CREATE POLICY "Anyone can view forum posts"
+    ON public.forum_posts
+    FOR SELECT
+    USING (true);
+
+-- Policy: Authenticated users can create posts
+CREATE POLICY "Authenticated users can create posts"
+    ON public.forum_posts
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can update their own posts
+CREATE POLICY "Users can update own posts"
+    ON public.forum_posts
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+
+-- Policy: Users can delete their own posts
+CREATE POLICY "Users can delete own posts"
+    ON public.forum_posts
+    FOR DELETE
+    USING (auth.uid() = user_id);
+
+-- Trigger for forum_posts updated_at
+DROP TRIGGER IF EXISTS update_forum_posts_updated_at ON public.forum_posts;
+CREATE TRIGGER update_forum_posts_updated_at
+    BEFORE UPDATE ON public.forum_posts
+    FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
+
+-- ============================================
+-- 9. FORUM REPLIES TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.forum_replies (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_id UUID REFERENCES public.forum_posts(id) ON DELETE CASCADE NOT NULL,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    content TEXT NOT NULL,
+    upvotes INTEGER DEFAULT 0,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS for forum_replies
+ALTER TABLE public.forum_replies ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Anyone can view replies
+CREATE POLICY "Anyone can view replies"
+    ON public.forum_replies
+    FOR SELECT
+    USING (true);
+
+-- Policy: Authenticated users can create replies
+CREATE POLICY "Authenticated users can reply"
+    ON public.forum_replies
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can update their own replies
+CREATE POLICY "Users can update own replies"
+    ON public.forum_replies
+    FOR UPDATE
+    USING (auth.uid() = user_id);
+
+-- Policy: Users can delete their own replies
+CREATE POLICY "Users can delete own replies"
+    ON public.forum_replies
+    FOR DELETE
+    USING (auth.uid() = user_id);
+
+-- ============================================
 -- DONE! Your database is ready.
 -- ============================================

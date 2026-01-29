@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community - TraceAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10/dist/umd/supabase.min.js"></script>
+    <style>
+        .community-page {
+            padding-top: 72px;
+            min-height: 100vh;
+        }
+
+        .community-hero {
+            text-align: center;
+            padding: 80px 24px 48px;
+            position: relative;
+        }
+
+        .community-hero h1 {
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .community-hero p {
+            font-size: 17px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .community-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px 80px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 32px;
+        }
+
+        /* Sidebar */
+        .community-sidebar {
+            position: sticky;
+            top: 96px;
+            height: fit-content;
+        }
+
+        .sidebar-section {
+            margin-bottom: 24px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            padding: 0 12px;
+        }
+
+        .category-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            border-radius: var(--radius-md);
+            transition: all var(--transition-fast);
+        }
+
+        .category-link:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .category-link.active {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-secondary);
+        }
+
+        .category-link svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+        }
+
+        .category-link .count {
+            margin-left: auto;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .new-post-btn {
+            width: 100%;
+            margin-top: 16px;
+        }
+
+        /* Main content */
+        .community-main {
+            min-width: 0;
+        }
+
+        /* Posts list */
+        .posts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .posts-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .sort-select {
+            padding: 8px 32px 8px 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-family: inherit;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2371717a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            cursor: pointer;
+        }
+
+        .posts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .post-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            transition: all var(--transition-fast);
+        }
+
+        .post-card:hover {
+            border-color: var(--border-light);
+        }
+
+        .post-card.pinned {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .post-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .post-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-title a {
+            color: var(--text-primary);
+            transition: color var(--transition-fast);
+        }
+
+        .post-title a:hover {
+            color: var(--accent-secondary);
+        }
+
+        .pinned-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: var(--accent-primary);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .post-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-meta .author {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .post-category {
+            padding: 2px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 4px;
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+
+        .post-category.general { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .post-category.showcase { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+        .post-category.help { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .post-category.feedback { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .post-category.tutorials { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+        .post-preview {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .post-stats {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .post-stat svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        /* New Post Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1001;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: var(--radius-sm);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .modal-close svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 11px 14px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color var(--transition-fast);
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-primary);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        select.form-input {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2371717a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Login prompt */
+        .login-prompt {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .login-prompt p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .community-container {
+                grid-template-columns: 1fr;
+            }
+
+            .community-sidebar {
+                position: static;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            .sidebar-section {
+                margin-bottom: 0;
+            }
+
+            .sidebar-section h3 {
+                display: none;
+            }
+
+            .category-link {
+                padding: 8px 12px;
+                border: 1px solid var(--border-color);
+                border-radius: 100px;
+            }
+
+            .category-link .count {
+                display: none;
+            }
+
+            .new-post-btn {
+                width: auto;
+                margin-top: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                    <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                    <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                </svg>
+                <span>TraceAI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="features.html">Features</a></li>
+                <li><a href="pricing.html">Pricing</a></li>
+                <li><a href="docs.html">Docs</a></li>
+            </ul>
+            <!-- Logged out state -->
+            <div class="nav-buttons" id="navLoggedOut">
+                <a href="auth.html" class="btn btn-ghost">Sign In</a>
+                <a href="auth.html" class="btn btn-primary">Get Started</a>
+            </div>
+            <!-- Logged in state -->
+            <div class="nav-buttons" id="navLoggedIn" style="display:none">
+                <button class="btn btn-ghost" onclick="signOut()">Sign Out</button>
+                <a href="profile.html" class="nav-avatar" id="navAvatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=default" alt="User" id="navAvatarImg">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="community-page">
+        <!-- Hero -->
+        <div class="community-hero">
+            <div class="hero-bg">
+                <div class="grid-pattern"></div>
+                <div class="glow glow-1"></div>
+            </div>
+            <div style="position:relative">
+                <h1>Community <span class="gradient-text">Forum</span></h1>
+                <p>Ask questions, share your projects, and connect with other PCB designers.</p>
+            </div>
+        </div>
+
+        <div class="community-container">
+            <!-- Sidebar -->
+            <aside class="community-sidebar">
+                <div class="sidebar-section">
+                    <h3>Categories</h3>
+                    <a href="#" class="category-link active" data-category="all">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+                        All Posts
+                        <span class="count" id="allCount">0</span>
+                    </a>
+                    <a href="#" class="category-link" data-category="general">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                        General
+                        <span class="count" id="generalCount">0</span>
+                    </a>
+                    <a href="#" class="category-link" data-category="showcase">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Showcase
+                        <span class="count" id="showcaseCount">0</span>
+                    </a>
+                    <a href="#" class="category-link" data-category="help">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                        Help & Questions
+                        <span class="count" id="helpCount">0</span>
+                    </a>
+                    <a href="#" class="category-link" data-category="feedback">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+                        Feedback
+                        <span class="count" id="feedbackCount">0</span>
+                    </a>
+                    <a href="#" class="category-link" data-category="tutorials">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                        Tutorials
+                        <span class="count" id="tutorialsCount">0</span>
+                    </a>
+                </div>
+                <button class="btn btn-primary new-post-btn" onclick="openNewPostModal()" id="newPostBtn" style="display:none">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px">
+                        <line x1="12" y1="5" x2="12" y2="19"/>
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                    </svg>
+                    New Post
+                </button>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="community-main">
+                <div id="loginPrompt" class="login-prompt" style="display:none">
+                    <p>Sign in to create posts and join the discussion.</p>
+                    <a href="auth.html" class="btn btn-primary">Sign In</a>
+                </div>
+
+                <div class="posts-header">
+                    <h2 id="postsTitle">All Posts</h2>
+                    <select class="sort-select" id="sortSelect">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="popular">Most Popular</option>
+                    </select>
+                </div>
+
+                <div class="posts-list" id="postsList">
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        </svg>
+                        <h3>No posts yet</h3>
+                        <p>Be the first to start a discussion!</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- New Post Modal -->
+    <div class="modal-overlay" id="newPostModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Create New Post</h2>
+                <button class="modal-close" onclick="closeNewPostModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="postCategory">Category</label>
+                    <select id="postCategory" class="form-input">
+                        <option value="general">General</option>
+                        <option value="showcase">Showcase</option>
+                        <option value="help">Help & Questions</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="tutorials">Tutorials</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="postTitle">Title</label>
+                    <input type="text" id="postTitle" class="form-input" placeholder="What's your post about?">
+                </div>
+                <div class="form-group">
+                    <label for="postContent">Content</label>
+                    <textarea id="postContent" class="form-input" placeholder="Share your thoughts, questions, or project details..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-ghost" onclick="closeNewPostModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="createPost()" id="createPostBtn">Create Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <svg class="logo-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="2" width="36" height="36" rx="8" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                            <circle cx="28" cy="12" r="3" fill="currentColor"/>
+                            <circle cx="12" cy="28" r="3" fill="currentColor"/>
+                            <circle cx="28" cy="28" r="3" fill="currentColor"/>
+                            <path d="M12 12h16M12 28h16M12 12v16M28 12v16" stroke="currentColor" stroke-width="1.5"/>
+                            <circle cx="20" cy="20" r="4" fill="currentColor"/>
+                        </svg>
+                        <span>TraceAI</span>
+                    </div>
+                    <p>AI-powered PCB design for the modern engineer.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="features.html">Features</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                        <li><a href="#">Changelog</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="docs.html">Documentation</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="community.html">Community</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 TraceAI. All rights reserved.</p>
+                <div class="footer-legal">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/supabase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        let currentUser = null;
+        let posts = [];
+        let currentCategory = 'all';
+        let currentSort = 'newest';
+
+        // Initialize
+        (async function init() {
+            const session = await getSession();
+
+            if (session) {
+                currentUser = session.user;
+                document.getElementById('navLoggedOut').style.display = 'none';
+                document.getElementById('navLoggedIn').style.display = 'flex';
+                document.getElementById('newPostBtn').style.display = 'flex';
+
+                const meta = currentUser.user_metadata || {};
+                document.getElementById('navAvatarImg').src = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+            } else {
+                document.getElementById('loginPrompt').style.display = 'block';
+            }
+
+            // Load posts
+            await loadPosts();
+
+            // Setup category filters
+            document.querySelectorAll('.category-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.category-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.dataset.category;
+                    updatePostsTitle();
+                    renderPosts();
+                });
+            });
+
+            // Sort select
+            document.getElementById('sortSelect').addEventListener('change', function() {
+                currentSort = this.value;
+                renderPosts();
+            });
+        })();
+
+        async function loadPosts() {
+            try {
+                // Load posts with user profiles
+                const { data, error } = await supabase
+                    .from('forum_posts')
+                    .select(`
+                        *,
+                        profiles:user_id (display_name, avatar_url)
+                    `)
+                    .order('is_pinned', { ascending: false })
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                posts = data || [];
+                updateCounts();
+                renderPosts();
+            } catch (err) {
+                console.error('Failed to load posts:', err);
+            }
+        }
+
+        function updateCounts() {
+            const counts = { all: posts.length, general: 0, showcase: 0, help: 0, feedback: 0, tutorials: 0 };
+            posts.forEach(p => {
+                if (counts[p.category] !== undefined) counts[p.category]++;
+            });
+
+            document.getElementById('allCount').textContent = counts.all;
+            document.getElementById('generalCount').textContent = counts.general;
+            document.getElementById('showcaseCount').textContent = counts.showcase;
+            document.getElementById('helpCount').textContent = counts.help;
+            document.getElementById('feedbackCount').textContent = counts.feedback;
+            document.getElementById('tutorialsCount').textContent = counts.tutorials;
+        }
+
+        function updatePostsTitle() {
+            const titles = {
+                all: 'All Posts',
+                general: 'General',
+                showcase: 'Showcase',
+                help: 'Help & Questions',
+                feedback: 'Feedback',
+                tutorials: 'Tutorials'
+            };
+            document.getElementById('postsTitle').textContent = titles[currentCategory] || 'All Posts';
+        }
+
+        function renderPosts() {
+            const list = document.getElementById('postsList');
+
+            let filtered = currentCategory === 'all' ? posts : posts.filter(p => p.category === currentCategory);
+
+            // Sort
+            if (currentSort === 'newest') {
+                filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            } else if (currentSort === 'oldest') {
+                filtered.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+            } else if (currentSort === 'popular') {
+                filtered.sort((a, b) => b.upvotes - a.upvotes);
+            }
+
+            // Keep pinned at top
+            filtered.sort((a, b) => (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0));
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                        </svg>
+                        <h3>No posts yet</h3>
+                        <p>Be the first to start a discussion!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map(post => {
+                const profile = post.profiles || {};
+                const avatarUrl = profile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.user_id}`;
+                const displayName = profile.display_name || 'Anonymous';
+
+                return `
+                    <div class="post-card ${post.is_pinned ? 'pinned' : ''}">
+                        <div class="post-header">
+                            <img src="${avatarUrl}" class="post-avatar" alt="${displayName}">
+                            <div class="post-info">
+                                <div class="post-title">
+                                    <a href="#">${escapeHtml(post.title)}</a>
+                                    ${post.is_pinned ? '<span class="pinned-badge">Pinned</span>' : ''}
+                                </div>
+                                <div class="post-meta">
+                                    <span class="author">${escapeHtml(displayName)}</span>
+                                    <span>&bull;</span>
+                                    <span>${formatDate(post.created_at)}</span>
+                                    <span class="post-category ${post.category}">${post.category}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="post-preview">${escapeHtml(post.content)}</div>
+                        <div class="post-stats">
+                            <span class="post-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+                                ${post.upvotes}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openNewPostModal() {
+            if (!currentUser) {
+                window.location.href = 'auth.html';
+                return;
+            }
+            document.getElementById('newPostModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeNewPostModal() {
+            document.getElementById('newPostModal').classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postContent').value = '';
+        }
+
+        async function createPost() {
+            const category = document.getElementById('postCategory').value;
+            const title = document.getElementById('postTitle').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+
+            if (!title || !content) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const btn = document.getElementById('createPostBtn');
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+
+            try {
+                const { data, error } = await supabase
+                    .from('forum_posts')
+                    .insert([{
+                        user_id: currentUser.id,
+                        category,
+                        title,
+                        content
+                    }])
+                    .select(`
+                        *,
+                        profiles:user_id (display_name, avatar_url)
+                    `)
+                    .single();
+
+                if (error) throw error;
+
+                posts.unshift(data);
+                updateCounts();
+                renderPosts();
+                closeNewPostModal();
+            } catch (err) {
+                console.error('Failed to create post:', err);
+                alert('Failed to create post. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Create Post';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins}m ago`;
+            if (diffHours < 24) return `${diffHours}h ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        // Close modal on overlay click
+        document.getElementById('newPostModal').addEventListener('click', function(e) {
+            if (e.target === this) closeNewPostModal();
+        });
+
+        // Close modal on Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeNewPostModal();
+        });
+    </script>
+</body>
+</html>

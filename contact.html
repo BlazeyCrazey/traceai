@@ -49,11 +49,6 @@
             font-weight: 600;
             margin-bottom: 24px;
         }
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
         .contact-form .form-group {
             margin-bottom: 20px;
         }
@@ -96,7 +91,7 @@
         }
         .contact-form textarea {
             resize: vertical;
-            min-height: 120px;
+            min-height: 140px;
         }
         .contact-form .btn-primary {
             width: 100%;
@@ -123,6 +118,18 @@
         .form-success p {
             font-size: 14px;
             color: var(--text-secondary);
+        }
+
+        /* Form error state */
+        .form-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--error);
+            display: none;
         }
 
         /* Info cards */
@@ -243,11 +250,6 @@
                 grid-template-columns: 1fr;
             }
         }
-        @media (max-width: 600px) {
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
     </style>
 </head>
 <body>
@@ -295,7 +297,7 @@
         </div>
         <div style="position:relative">
             <h1>Get in <span class="gradient-text">Touch</span></h1>
-            <p>Have a question, feature request, or partnership inquiry? We'd love to hear from you.</p>
+            <p>Have a question, feature request, or need help? Send us a message and we'll get back to you.</p>
         </div>
     </section>
 
@@ -304,16 +306,11 @@
         <!-- Form -->
         <div class="contact-form" id="contactForm">
             <h2>Send a Message</h2>
+            <div class="form-error" id="formError"></div>
             <form id="contactFormEl" novalidate>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="contactName">Name</label>
-                        <input type="text" id="contactName" placeholder="Your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="contactEmail">Email</label>
-                        <input type="email" id="contactEmail" placeholder="you@example.com" required>
-                    </div>
+                <div class="form-group">
+                    <label for="contactTitle">Title</label>
+                    <input type="text" id="contactTitle" placeholder="Brief summary of your message" required>
                 </div>
                 <div class="form-group">
                     <label for="contactSubject">Subject</label>
@@ -325,11 +322,12 @@
                         <option value="bug">Bug Report</option>
                         <option value="enterprise">Enterprise / Sales</option>
                         <option value="partnership">Partnership</option>
+                        <option value="account">Account Deletion Request</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label for="contactMessage">Message</label>
-                    <textarea id="contactMessage" placeholder="Tell us more..." rows="5" required></textarea>
+                    <textarea id="contactMessage" placeholder="Please describe your question or request in detail..." rows="6" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary" id="contactSubmitBtn">Send Message</button>
             </form>
@@ -341,7 +339,7 @@
                     <polyline points="22,4 12,14.01 9,11.01"/>
                 </svg>
                 <h3>Message Sent!</h3>
-                <p>Thanks for reaching out. We'll get back to you within 24 hours.</p>
+                <p>Thanks for reaching out. We'll review your message and respond if needed.</p>
             </div>
         </div>
 
@@ -350,12 +348,11 @@
             <div class="info-card">
                 <div class="info-card-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
+                        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
                     </svg>
                 </div>
-                <h3>Email</h3>
-                <p>For general inquiries and support:<br><a href="mailto:support@traceai.dev">support@traceai.dev</a></p>
+                <h3>Community Forum</h3>
+                <p>Join discussions, share your projects, and get help from other users.<br><a href="community.html">Visit the Forum</a></p>
             </div>
             <div class="info-card">
                 <div class="info-card-icon">
@@ -363,8 +360,8 @@
                         <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
                     </svg>
                 </div>
-                <h3>Community Discord</h3>
-                <p>Join our Discord server to chat with other users, share designs, and get real-time help.<br><a href="#">discord.gg/traceai</a></p>
+                <h3>Discord</h3>
+                <p>Chat with the community in real-time and get quick answers.<br><a href="#">discord.gg/traceai</a></p>
             </div>
             <div class="info-card">
                 <div class="info-card-icon">
@@ -373,13 +370,13 @@
                     </svg>
                 </div>
                 <h3>GitHub</h3>
-                <p>Report bugs, request features, or contribute to our open-source components.<br><a href="#">github.com/traceai</a></p>
+                <p>Report bugs or request features on our issue tracker.<br><a href="#">github.com/traceai</a></p>
             </div>
         </div>
     </section>
 
     <!-- FAQ Section -->
-    <section class="faq-section">
+    <section class="faq-section" id="faq">
         <h2>Frequently Asked <span class="gradient-text">Questions</span></h2>
 
         <div class="faq-item">
@@ -389,7 +386,7 @@
             </button>
             <div class="faq-answer">
                 <div class="faq-answer-inner">
-                    Yes! TraceAI offers a free tier that includes unlimited public projects and up to 3 private projects. The free plan gives you full access to the schematic editor, PCB layout editor, and AI assistant. Paid plans add more private projects, priority AI processing, and team collaboration features.
+                    Yes! TraceAI offers a free tier that includes up to 3 projects and access to the Llama 3.3 70B AI assistant. The free plan gives you access to the schematic editor, PCB layout editor, and basic component library. Paid plans add more projects, advanced AI models, and team features.
                 </div>
             </div>
         </div>
@@ -420,12 +417,12 @@
 
         <div class="faq-item">
             <button class="faq-question">
-                How does the AI assistant work?
+                How do I delete my account?
                 <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
             <div class="faq-answer">
                 <div class="faq-answer-inner">
-                    The AI assistant is powered by Claude and has been fine-tuned on electronics design data. It can see your current schematic and PCB layout, understand circuit topology, and generate or modify designs based on natural-language instructions. It also has access to component datasheets and design best practices.
+                    To delete your account, please submit a contact request using the form above with "Account Deletion Request" as the subject. Include the email address associated with your account. We will process your request within 48 hours and permanently delete all your data.
                 </div>
             </div>
         </div>
@@ -488,8 +485,8 @@
                     <ul>
                         <li><a href="docs.html">Documentation</a></li>
                         <li><a href="#">Tutorials</a></li>
+                        <li><a href="community.html">Community</a></li>
                         <li><a href="#">Blog</a></li>
-                        <li><a href="#">Community</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
@@ -515,7 +512,7 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        // Auth state + auto-fill
+        // Auth state
         (async function() {
             const session = await getSession();
             if (session) {
@@ -526,11 +523,6 @@
                 const meta = user.user_metadata || {};
                 const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
                 document.getElementById('navAvatarImg').src = avatarUrl;
-
-                // Auto-fill name and email
-                const name = meta.full_name || meta.name || meta.display_name || '';
-                if (name) document.getElementById('contactName').value = name;
-                document.getElementById('contactEmail').value = user.email || '';
             }
         })();
 
@@ -556,28 +548,45 @@
         });
 
         // Form submit handler
-        document.getElementById('contactFormEl').addEventListener('submit', function(e) {
+        document.getElementById('contactFormEl').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const name = document.getElementById('contactName').value.trim();
-            const email = document.getElementById('contactEmail').value.trim();
+            const title = document.getElementById('contactTitle').value.trim();
             const subject = document.getElementById('contactSubject').value;
             const message = document.getElementById('contactMessage').value.trim();
+            const errorEl = document.getElementById('formError');
 
-            if (!name || !email || !subject || !message) return;
+            if (!title || !subject || !message) {
+                errorEl.textContent = 'Please fill in all fields.';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
 
             const btn = document.getElementById('contactSubmitBtn');
             btn.disabled = true;
             btn.textContent = 'Sending...';
 
-            // Simulate send (no backend yet)
-            setTimeout(function() {
+            try {
+                // Submit to Supabase
+                const { error } = await supabase
+                    .from('contact_submissions')
+                    .insert([{ title, subject, message }]);
+
+                if (error) throw error;
+
+                // Show success
                 document.getElementById('contactFormEl').style.display = 'none';
                 document.querySelector('.contact-form h2').style.display = 'none';
                 document.getElementById('formSuccess').style.display = 'block';
+            } catch (err) {
+                console.error('Submit error:', err);
+                errorEl.textContent = 'Failed to send message. Please try again.';
+                errorEl.style.display = 'block';
                 btn.disabled = false;
                 btn.textContent = 'Send Message';
-            }, 1200);
+            }
         });
     </script>
 </body>
