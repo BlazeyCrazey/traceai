@@ -145,6 +145,7 @@
             border-radius: var(--radius-md);
             padding: 20px;
             transition: all var(--transition-fast);
+            cursor: pointer;
         }
 
         .post-card:hover {
@@ -154,6 +155,11 @@
         .post-card.pinned {
             border-color: var(--accent-primary);
             background: rgba(99, 102, 241, 0.03);
+        }
+
+        .post-card.enterprise-post {
+            border-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.03);
         }
 
         .post-header {
@@ -183,6 +189,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .post-title a {
@@ -207,12 +214,44 @@
             border-radius: 4px;
         }
 
+        .enterprise-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .enterprise-badge svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        .pro-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border-radius: 4px;
+        }
+
         .post-meta {
             font-size: 13px;
             color: var(--text-muted);
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
         }
 
         .post-meta .author {
@@ -285,7 +324,7 @@
             margin-bottom: 8px;
         }
 
-        /* New Post Modal */
+        /* Modals */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -309,6 +348,10 @@
             max-width: 600px;
             max-height: 90vh;
             overflow-y: auto;
+        }
+
+        .modal.large {
+            max-width: 800px;
         }
 
         .modal-header {
@@ -406,7 +449,7 @@
             border-top: 1px solid var(--border-color);
         }
 
-        /* Login prompt */
+        /* Login/upgrade prompt */
         .login-prompt {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -419,6 +462,110 @@
         .login-prompt p {
             color: var(--text-secondary);
             margin-bottom: 16px;
+        }
+
+        .login-prompt .upgrade-hint {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 12px;
+        }
+
+        /* Post Detail View */
+        .post-detail-header {
+            margin-bottom: 24px;
+        }
+
+        .post-detail-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .post-detail-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .post-detail-meta img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .post-detail-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            white-space: pre-wrap;
+        }
+
+        /* Replies */
+        .replies-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .reply-card {
+            background: var(--bg-tertiary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .reply-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .reply-header img {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+        }
+
+        .reply-header .author {
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .reply-header .time {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .reply-content {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .reply-form {
+            margin-top: 20px;
+        }
+
+        .reply-form textarea {
+            min-height: 80px;
+            margin-bottom: 12px;
+        }
+
+        .no-replies {
+            text-align: center;
+            padding: 32px;
+            color: var(--text-muted);
         }
 
         /* Responsive */
@@ -480,6 +627,7 @@
                 <li><a href="features.html">Features</a></li>
                 <li><a href="pricing.html">Pricing</a></li>
                 <li><a href="docs.html">Docs</a></li>
+                <li><a href="community.html" class="active">Community</a></li>
             </ul>
             <!-- Logged out state -->
             <div class="nav-buttons" id="navLoggedOut">
@@ -557,8 +705,15 @@
             <!-- Main Content -->
             <main class="community-main">
                 <div id="loginPrompt" class="login-prompt" style="display:none">
-                    <p>Sign in to create posts and join the discussion.</p>
+                    <p>Sign in with a Pro or Enterprise plan to create posts and join the discussion.</p>
                     <a href="auth.html" class="btn btn-primary">Sign In</a>
+                    <p class="upgrade-hint">Free users can browse and read all posts.</p>
+                </div>
+
+                <div id="upgradePrompt" class="login-prompt" style="display:none">
+                    <p>Upgrade to Pro or Enterprise to create posts and join the discussion.</p>
+                    <a href="pricing.html" class="btn btn-primary">View Plans</a>
+                    <p class="upgrade-hint">Free users can browse and read all posts.</p>
                 </div>
 
                 <div class="posts-header">
@@ -618,6 +773,24 @@
             <div class="modal-footer">
                 <button class="btn btn-ghost" onclick="closeNewPostModal()">Cancel</button>
                 <button class="btn btn-primary" onclick="createPost()" id="createPostBtn">Create Post</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Detail Modal -->
+    <div class="modal-overlay" id="postDetailModal">
+        <div class="modal large">
+            <div class="modal-header">
+                <h2>Post Details</h2>
+                <button class="modal-close" onclick="closePostDetailModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body" id="postDetailBody">
+                <!-- Filled dynamically -->
             </div>
         </div>
     </div>
@@ -683,6 +856,7 @@
     <script src="js/auth.js"></script>
     <script>
         let currentUser = null;
+        let currentUserProfile = null;
         let posts = [];
         let currentCategory = 'all';
         let currentSort = 'newest';
@@ -695,10 +869,33 @@
                 currentUser = session.user;
                 document.getElementById('navLoggedOut').style.display = 'none';
                 document.getElementById('navLoggedIn').style.display = 'flex';
-                document.getElementById('newPostBtn').style.display = 'flex';
 
                 const meta = currentUser.user_metadata || {};
                 document.getElementById('navAvatarImg').src = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
+
+                // Fetch user profile to check plan
+                try {
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', currentUser.id)
+                        .single();
+
+                    if (!error && profile) {
+                        currentUserProfile = profile;
+                    }
+                } catch (e) {
+                    console.error('Error fetching profile:', e);
+                }
+
+                // Check if user can post (pro or enterprise)
+                const canPost = currentUserProfile && (currentUserProfile.plan === 'pro' || currentUserProfile.plan === 'enterprise');
+
+                if (canPost) {
+                    document.getElementById('newPostBtn').style.display = 'flex';
+                } else {
+                    document.getElementById('upgradePrompt').style.display = 'block';
+                }
             } else {
                 document.getElementById('loginPrompt').style.display = 'block';
             }
@@ -732,9 +929,8 @@
                     .from('forum_posts')
                     .select(`
                         *,
-                        profiles:user_id (display_name, avatar_url)
+                        profiles:user_id (display_name, avatar_url, plan)
                     `)
-                    .order('is_pinned', { ascending: false })
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
@@ -776,7 +972,7 @@
         function renderPosts() {
             const list = document.getElementById('postsList');
 
-            let filtered = currentCategory === 'all' ? posts : posts.filter(p => p.category === currentCategory);
+            let filtered = currentCategory === 'all' ? [...posts] : posts.filter(p => p.category === currentCategory);
 
             // Sort
             if (currentSort === 'newest') {
@@ -787,8 +983,20 @@
                 filtered.sort((a, b) => b.upvotes - a.upvotes);
             }
 
-            // Keep pinned at top
-            filtered.sort((a, b) => (b.is_pinned ? 1 : 0) - (a.is_pinned ? 1 : 0));
+            // Priority: Pinned first, then Enterprise, then others
+            filtered.sort((a, b) => {
+                // Pinned always first
+                if (a.is_pinned && !b.is_pinned) return -1;
+                if (!a.is_pinned && b.is_pinned) return 1;
+
+                // Enterprise users next
+                const aEnterprise = a.profiles?.plan === 'enterprise';
+                const bEnterprise = b.profiles?.plan === 'enterprise';
+                if (aEnterprise && !bEnterprise) return -1;
+                if (!aEnterprise && bEnterprise) return 1;
+
+                return 0;
+            });
 
             if (filtered.length === 0) {
                 list.innerHTML = `
@@ -807,15 +1015,34 @@
                 const profile = post.profiles || {};
                 const avatarUrl = profile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.user_id}`;
                 const displayName = profile.display_name || 'Anonymous';
+                const userPlan = profile.plan || 'free';
+
+                const isEnterprise = userPlan === 'enterprise';
+                const isPro = userPlan === 'pro';
+
+                let badges = '';
+                if (post.is_pinned) {
+                    badges += '<span class="pinned-badge">Pinned</span>';
+                }
+                if (isEnterprise) {
+                    badges += `<span class="enterprise-badge">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                        Enterprise
+                    </span>`;
+                } else if (isPro) {
+                    badges += '<span class="pro-badge">Pro</span>';
+                }
+
+                const cardClass = post.is_pinned ? 'pinned' : (isEnterprise ? 'enterprise-post' : '');
 
                 return `
-                    <div class="post-card ${post.is_pinned ? 'pinned' : ''}">
+                    <div class="post-card ${cardClass}" onclick="openPostDetail('${post.id}')">
                         <div class="post-header">
-                            <img src="${avatarUrl}" class="post-avatar" alt="${displayName}">
+                            <img src="${avatarUrl}" class="post-avatar" alt="${escapeHtml(displayName)}">
                             <div class="post-info">
                                 <div class="post-title">
-                                    <a href="#">${escapeHtml(post.title)}</a>
-                                    ${post.is_pinned ? '<span class="pinned-badge">Pinned</span>' : ''}
+                                    <a href="#" onclick="event.preventDefault()">${escapeHtml(post.title)}</a>
+                                    ${badges}
                                 </div>
                                 <div class="post-meta">
                                     <span class="author">${escapeHtml(displayName)}</span>
@@ -831,10 +1058,174 @@
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
                                 ${post.upvotes}
                             </span>
+                            <span class="post-stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                                <span class="reply-count" data-post-id="${post.id}">0</span>
+                            </span>
                         </div>
                     </div>
                 `;
             }).join('');
+
+            // Load reply counts
+            loadReplyCounts(filtered.map(p => p.id));
+        }
+
+        async function loadReplyCounts(postIds) {
+            for (const postId of postIds) {
+                try {
+                    const { count, error } = await supabase
+                        .from('forum_replies')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('post_id', postId);
+
+                    if (!error) {
+                        const el = document.querySelector(`.reply-count[data-post-id="${postId}"]`);
+                        if (el) el.textContent = count || 0;
+                    }
+                } catch (e) {}
+            }
+        }
+
+        async function openPostDetail(postId) {
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+
+            const profile = post.profiles || {};
+            const avatarUrl = profile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.user_id}`;
+            const displayName = profile.display_name || 'Anonymous';
+            const userPlan = profile.plan || 'free';
+
+            let badges = '';
+            if (post.is_pinned) badges += '<span class="pinned-badge">Pinned</span>';
+            if (userPlan === 'enterprise') {
+                badges += `<span class="enterprise-badge"><svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Enterprise</span>`;
+            } else if (userPlan === 'pro') {
+                badges += '<span class="pro-badge">Pro</span>';
+            }
+
+            // Load replies
+            let repliesHtml = '<div class="no-replies">No replies yet. Be the first to respond!</div>';
+            try {
+                const { data: replies, error } = await supabase
+                    .from('forum_replies')
+                    .select(`*, profiles:user_id (display_name, avatar_url, plan)`)
+                    .eq('post_id', postId)
+                    .order('created_at', { ascending: true });
+
+                if (!error && replies && replies.length > 0) {
+                    repliesHtml = replies.map(reply => {
+                        const rProfile = reply.profiles || {};
+                        const rAvatar = rProfile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${reply.user_id}`;
+                        const rName = rProfile.display_name || 'Anonymous';
+                        const rPlan = rProfile.plan || 'free';
+
+                        let rBadge = '';
+                        if (rPlan === 'enterprise') {
+                            rBadge = `<span class="enterprise-badge" style="font-size:9px;padding:1px 6px;"><svg viewBox="0 0 24 24" fill="currentColor" style="width:10px;height:10px"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg></span>`;
+                        } else if (rPlan === 'pro') {
+                            rBadge = '<span class="pro-badge" style="font-size:9px;padding:1px 6px;">Pro</span>';
+                        }
+
+                        return `
+                            <div class="reply-card">
+                                <div class="reply-header">
+                                    <img src="${rAvatar}" alt="${escapeHtml(rName)}">
+                                    <span class="author">${escapeHtml(rName)}</span>
+                                    ${rBadge}
+                                    <span class="time">${formatDate(reply.created_at)}</span>
+                                </div>
+                                <div class="reply-content">${escapeHtml(reply.content)}</div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            } catch (e) {
+                console.error('Failed to load replies:', e);
+            }
+
+            // Check if user can reply
+            const canReply = currentUserProfile && (currentUserProfile.plan === 'pro' || currentUserProfile.plan === 'enterprise');
+
+            let replyForm = '';
+            if (currentUser && canReply) {
+                replyForm = `
+                    <div class="reply-form">
+                        <textarea id="replyContent" class="form-input" placeholder="Write a reply..."></textarea>
+                        <button class="btn btn-primary" onclick="submitReply('${postId}')">Post Reply</button>
+                    </div>
+                `;
+            } else if (currentUser) {
+                replyForm = `
+                    <div class="login-prompt" style="margin-top:20px">
+                        <p>Upgrade to Pro or Enterprise to reply to posts.</p>
+                        <a href="pricing.html" class="btn btn-primary">View Plans</a>
+                    </div>
+                `;
+            } else {
+                replyForm = `
+                    <div class="login-prompt" style="margin-top:20px">
+                        <p>Sign in with a Pro or Enterprise plan to reply.</p>
+                        <a href="auth.html" class="btn btn-primary">Sign In</a>
+                    </div>
+                `;
+            }
+
+            document.getElementById('postDetailBody').innerHTML = `
+                <div class="post-detail-header">
+                    <div class="post-detail-title">
+                        ${escapeHtml(post.title)}
+                        ${badges}
+                    </div>
+                    <div class="post-detail-meta">
+                        <img src="${avatarUrl}" alt="${escapeHtml(displayName)}">
+                        <span class="author">${escapeHtml(displayName)}</span>
+                        <span>&bull;</span>
+                        <span>${formatDate(post.created_at)}</span>
+                        <span class="post-category ${post.category}">${post.category}</span>
+                    </div>
+                </div>
+                <div class="post-detail-content">${escapeHtml(post.content)}</div>
+                <div class="replies-section">
+                    <h3>Replies</h3>
+                    ${repliesHtml}
+                    ${replyForm}
+                </div>
+            `;
+
+            document.getElementById('postDetailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePostDetailModal() {
+            document.getElementById('postDetailModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function submitReply(postId) {
+            const content = document.getElementById('replyContent').value.trim();
+            if (!content) {
+                alert('Please enter a reply');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('forum_replies')
+                    .insert([{
+                        post_id: postId,
+                        user_id: currentUser.id,
+                        content
+                    }]);
+
+                if (error) throw error;
+
+                // Reload post detail
+                openPostDetail(postId);
+            } catch (err) {
+                console.error('Failed to submit reply:', err);
+                alert('Failed to submit reply. Please try again.');
+            }
         }
 
         function openNewPostModal() {
@@ -842,6 +1233,13 @@
                 window.location.href = 'auth.html';
                 return;
             }
+
+            // Double check plan
+            if (!currentUserProfile || (currentUserProfile.plan !== 'pro' && currentUserProfile.plan !== 'enterprise')) {
+                alert('You need a Pro or Enterprise plan to create posts.');
+                return;
+            }
+
             document.getElementById('newPostModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -878,11 +1276,14 @@
                     }])
                     .select(`
                         *,
-                        profiles:user_id (display_name, avatar_url)
+                        profiles:user_id (display_name, avatar_url, plan)
                     `)
                     .single();
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Supabase error:', error);
+                    throw error;
+                }
 
                 posts.unshift(data);
                 updateCounts();
@@ -890,7 +1291,7 @@
                 closeNewPostModal();
             } catch (err) {
                 console.error('Failed to create post:', err);
-                alert('Failed to create post. Please try again.');
+                alert('Failed to create post: ' + (err.message || 'Unknown error'));
             } finally {
                 btn.disabled = false;
                 btn.textContent = 'Create Post';
@@ -919,14 +1320,21 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
 
-        // Close modal on overlay click
+        // Close modals on overlay click
         document.getElementById('newPostModal').addEventListener('click', function(e) {
             if (e.target === this) closeNewPostModal();
         });
 
-        // Close modal on Escape
+        document.getElementById('postDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) closePostDetailModal();
+        });
+
+        // Close modals on Escape
         document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') closeNewPostModal();
+            if (e.key === 'Escape') {
+                closeNewPostModal();
+                closePostDetailModal();
+            }
         });
     </script>
 </body>
