@@ -132,6 +132,48 @@
             display: none;
         }
 
+        /* Upgrade prompt */
+        .upgrade-prompt {
+            text-align: center;
+            padding: 48px 24px;
+        }
+        .upgrade-prompt svg {
+            width: 48px;
+            height: 48px;
+            color: var(--accent-primary);
+            margin-bottom: 16px;
+        }
+        .upgrade-prompt h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .upgrade-prompt p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .upgrade-prompt .btn {
+            margin: 0 8px;
+        }
+
+        /* Priority badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 100px;
+            margin-bottom: 16px;
+        }
+        .priority-badge svg {
+            width: 14px;
+            height: 14px;
+        }
+
         /* Info cards */
         .contact-info {
             display: flex;
@@ -306,7 +348,26 @@
     <section class="contact-section">
         <!-- Form -->
         <div class="contact-form" id="contactForm">
-            <h2>Send a Message</h2>
+            <!-- Upgrade prompt for non-Pro users -->
+            <div class="upgrade-prompt" id="upgradePrompt" style="display:none">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+                </svg>
+                <h3>Direct Contact is a Pro Feature</h3>
+                <p>Upgrade to Pro or Enterprise to contact our team directly. Enterprise users get priority support.</p>
+                <a href="pricing.html" class="btn btn-primary">View Plans</a>
+                <a href="community.html" class="btn btn-ghost">Visit Community Forum</a>
+            </div>
+
+            <!-- Priority badge for Enterprise -->
+            <div id="priorityBadge" style="display:none">
+                <span class="priority-badge">
+                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+                    Priority Support
+                </span>
+            </div>
+
+            <h2 id="formTitle">Send a Message</h2>
             <div class="form-error" id="formError"></div>
             <form id="contactFormEl" novalidate>
                 <div class="form-group">
@@ -513,17 +574,66 @@
     <script src="js/supabase-config.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        // Auth state
+        let currentUser = null;
+        let currentUserProfile = null;
+
+        // Auth state and form access control
         (async function() {
             const session = await getSession();
             if (session) {
+                currentUser = session.user;
                 document.getElementById('navLoggedOut').style.display = 'none';
                 document.getElementById('navLoggedIn').style.display = 'flex';
 
-                const user = session.user;
-                const meta = user.user_metadata || {};
-                const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+                const meta = currentUser.user_metadata || {};
+                const avatarUrl = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${currentUser.email}`;
                 document.getElementById('navAvatarImg').src = avatarUrl;
+
+                // Fetch user profile to check plan
+                try {
+                    const { data: profile, error } = await supabase
+                        .from('profiles')
+                        .select('*')
+                        .eq('id', currentUser.id)
+                        .single();
+
+                    if (!error && profile) {
+                        currentUserProfile = profile;
+                    }
+                } catch (e) {
+                    console.error('Error fetching profile:', e);
+                }
+
+                // Check if user can use direct contact (Pro or Enterprise only)
+                const plan = currentUserProfile?.plan || 'free';
+                const canContact = plan === 'pro' || plan === 'enterprise';
+
+                if (canContact) {
+                    // Show form
+                    document.getElementById('contactFormEl').style.display = 'block';
+                    document.getElementById('formTitle').style.display = 'block';
+
+                    // Show priority badge for Enterprise
+                    if (plan === 'enterprise') {
+                        document.getElementById('priorityBadge').style.display = 'block';
+                    }
+                } else {
+                    // Show upgrade prompt
+                    document.getElementById('upgradePrompt').style.display = 'block';
+                    document.getElementById('contactFormEl').style.display = 'none';
+                    document.getElementById('formTitle').style.display = 'none';
+                }
+            } else {
+                // Not logged in - show upgrade prompt
+                document.getElementById('upgradePrompt').style.display = 'block';
+                document.getElementById('contactFormEl').style.display = 'none';
+                document.getElementById('formTitle').style.display = 'none';
+
+                // Update text for logged out users
+                document.querySelector('#upgradePrompt h3').textContent = 'Sign In Required';
+                document.querySelector('#upgradePrompt p').textContent = 'Sign in with a Pro or Enterprise account to contact our team directly.';
+                document.querySelector('#upgradePrompt .btn-primary').textContent = 'Sign In';
+                document.querySelector('#upgradePrompt .btn-primary').href = 'auth.html';
             }
         })();
 
@@ -570,16 +680,27 @@
             btn.textContent = 'Sending...';
 
             try {
+                // Determine priority based on plan
+                const plan = currentUserProfile?.plan || 'free';
+                const isPriority = plan === 'enterprise';
+
                 // Submit to Supabase
                 const { error } = await supabase
                     .from('contact_submissions')
-                    .insert([{ title, subject, message }]);
+                    .insert([{
+                        title,
+                        subject,
+                        message,
+                        user_id: currentUser?.id || null,
+                        is_priority: isPriority
+                    }]);
 
                 if (error) throw error;
 
                 // Show success
                 document.getElementById('contactFormEl').style.display = 'none';
-                document.querySelector('.contact-form h2').style.display = 'none';
+                document.getElementById('formTitle').style.display = 'none';
+                document.getElementById('priorityBadge').style.display = 'none';
                 document.getElementById('formSuccess').style.display = 'block';
             } catch (err) {
                 console.error('Submit error:', err);

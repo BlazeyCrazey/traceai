@@ -705,15 +705,13 @@
             <!-- Main Content -->
             <main class="community-main">
                 <div id="loginPrompt" class="login-prompt" style="display:none">
-                    <p>Sign in with a Pro or Enterprise plan to create posts and join the discussion.</p>
+                    <p>Sign in to create posts and join the discussion.</p>
                     <a href="auth.html" class="btn btn-primary">Sign In</a>
-                    <p class="upgrade-hint">Free users can browse and read all posts.</p>
                 </div>
 
-                <div id="upgradePrompt" class="login-prompt" style="display:none">
-                    <p>Upgrade to Pro or Enterprise to create posts and join the discussion.</p>
-                    <a href="pricing.html" class="btn btn-primary">View Plans</a>
-                    <p class="upgrade-hint">Free users can browse and read all posts.</p>
+                <div id="postLimitPrompt" class="login-prompt" style="display:none">
+                    <p id="postLimitMessage">You've reached your weekly post limit.</p>
+                    <a href="pricing.html" class="btn btn-primary">Upgrade for More Posts</a>
                 </div>
 
                 <div class="posts-header">
@@ -860,6 +858,15 @@
         let posts = [];
         let currentCategory = 'all';
         let currentSort = 'newest';
+        let userPostCount = 0;
+        let canPostToday = true;
+
+        // Post limits by plan
+        const POST_LIMITS = {
+            free: { count: 5, period: 'week' },
+            pro: { count: 5, period: 'week' },
+            enterprise: { count: 10, period: 'day' }
+        };
 
         // Initialize
         (async function init() {
@@ -888,13 +895,21 @@
                     console.error('Error fetching profile:', e);
                 }
 
-                // Check if user can post (pro or enterprise)
-                const canPost = currentUserProfile && (currentUserProfile.plan === 'pro' || currentUserProfile.plan === 'enterprise');
+                // All logged-in users can post, check their limits
+                await checkPostLimit();
 
-                if (canPost) {
+                if (canPostToday) {
                     document.getElementById('newPostBtn').style.display = 'flex';
                 } else {
-                    document.getElementById('upgradePrompt').style.display = 'block';
+                    const plan = currentUserProfile?.plan || 'free';
+                    const limit = POST_LIMITS[plan] || POST_LIMITS.free;
+                    const limitMsg = document.getElementById('postLimitMessage');
+                    if (limit.period === 'day') {
+                        limitMsg.textContent = `You've reached your daily post limit (${limit.count} posts/day).`;
+                    } else {
+                        limitMsg.textContent = `You've reached your weekly post limit (${limit.count} posts/week). Upgrade to Enterprise for 10 posts/day.`;
+                    }
+                    document.getElementById('postLimitPrompt').style.display = 'block';
                 }
             } else {
                 document.getElementById('loginPrompt').style.display = 'block';
@@ -921,6 +936,44 @@
                 renderPosts();
             });
         })();
+
+        async function checkPostLimit() {
+            if (!currentUser) {
+                canPostToday = false;
+                return;
+            }
+
+            const plan = currentUserProfile?.plan || 'free';
+            const limit = POST_LIMITS[plan] || POST_LIMITS.free;
+
+            // Calculate start date based on period
+            const now = new Date();
+            let startDate;
+            if (limit.period === 'day') {
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
+            } else {
+                // Week: start from beginning of current week (Monday)
+                const dayOfWeek = now.getDay();
+                const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday is 0
+                startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - diff).toISOString();
+            }
+
+            try {
+                const { count, error } = await supabase
+                    .from('forum_posts')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id)
+                    .gte('created_at', startDate);
+
+                if (!error) {
+                    userPostCount = count || 0;
+                    canPostToday = userPostCount < limit.count;
+                }
+            } catch (e) {
+                console.error('Error checking post limit:', e);
+                canPostToday = true; // Allow posting if check fails
+            }
+        }
 
         async function loadPosts() {
             try {
@@ -983,15 +1036,17 @@
                 filtered.sort((a, b) => b.upvotes - a.upvotes);
             }
 
-            // Priority: Pinned first, then Enterprise, then others
+            // Priority: Pinned first, then Enterprise posts (within 1 week), then others
+            const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
             filtered.sort((a, b) => {
                 // Pinned always first
                 if (a.is_pinned && !b.is_pinned) return -1;
                 if (!a.is_pinned && b.is_pinned) return 1;
 
-                // Enterprise users next
-                const aEnterprise = a.profiles?.plan === 'enterprise';
-                const bEnterprise = b.profiles?.plan === 'enterprise';
+                // Enterprise users next (only if post is within 1 week)
+                const aEnterprise = a.profiles?.plan === 'enterprise' && new Date(a.created_at) > oneWeekAgo;
+                const bEnterprise = b.profiles?.plan === 'enterprise' && new Date(b.created_at) > oneWeekAgo;
                 if (aEnterprise && !bEnterprise) return -1;
                 if (!aEnterprise && bEnterprise) return 1;
 
@@ -1019,21 +1074,24 @@
 
                 const isEnterprise = userPlan === 'enterprise';
                 const isPro = userPlan === 'pro';
+                const isEnterpriseFeatured = isEnterprise && new Date(post.created_at) > oneWeekAgo;
 
                 let badges = '';
                 if (post.is_pinned) {
                     badges += '<span class="pinned-badge">Pinned</span>';
                 }
-                if (isEnterprise) {
+                if (isEnterpriseFeatured) {
                     badges += `<span class="enterprise-badge">
                         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-                        Enterprise
+                        Featured
                     </span>`;
+                } else if (isEnterprise) {
+                    badges += '<span class="enterprise-badge">Enterprise</span>';
                 } else if (isPro) {
                     badges += '<span class="pro-badge">Pro</span>';
                 }
 
-                const cardClass = post.is_pinned ? 'pinned' : (isEnterprise ? 'enterprise-post' : '');
+                const cardClass = post.is_pinned ? 'pinned' : (isEnterpriseFeatured ? 'enterprise-post' : '');
 
                 return `
                     <div class="post-card ${cardClass}" onclick="openPostDetail('${post.id}')">
@@ -1095,11 +1153,15 @@
             const avatarUrl = profile.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${post.user_id}`;
             const displayName = profile.display_name || 'Anonymous';
             const userPlan = profile.plan || 'free';
+            const oneWeekAgoDetail = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            const isEnterpriseFeatured = userPlan === 'enterprise' && new Date(post.created_at) > oneWeekAgoDetail;
 
             let badges = '';
             if (post.is_pinned) badges += '<span class="pinned-badge">Pinned</span>';
-            if (userPlan === 'enterprise') {
-                badges += `<span class="enterprise-badge"><svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Enterprise</span>`;
+            if (isEnterpriseFeatured) {
+                badges += `<span class="enterprise-badge"><svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg> Featured</span>`;
+            } else if (userPlan === 'enterprise') {
+                badges += '<span class="enterprise-badge">Enterprise</span>';
             } else if (userPlan === 'pro') {
                 badges += '<span class="pro-badge">Pro</span>';
             }
@@ -1144,28 +1206,19 @@
                 console.error('Failed to load replies:', e);
             }
 
-            // Check if user can reply
-            const canReply = currentUserProfile && (currentUserProfile.plan === 'pro' || currentUserProfile.plan === 'enterprise');
-
+            // All logged-in users can reply
             let replyForm = '';
-            if (currentUser && canReply) {
+            if (currentUser) {
                 replyForm = `
                     <div class="reply-form">
                         <textarea id="replyContent" class="form-input" placeholder="Write a reply..."></textarea>
                         <button class="btn btn-primary" onclick="submitReply('${postId}')">Post Reply</button>
                     </div>
                 `;
-            } else if (currentUser) {
-                replyForm = `
-                    <div class="login-prompt" style="margin-top:20px">
-                        <p>Upgrade to Pro or Enterprise to reply to posts.</p>
-                        <a href="pricing.html" class="btn btn-primary">View Plans</a>
-                    </div>
-                `;
             } else {
                 replyForm = `
                     <div class="login-prompt" style="margin-top:20px">
-                        <p>Sign in with a Pro or Enterprise plan to reply.</p>
+                        <p>Sign in to reply to posts.</p>
                         <a href="auth.html" class="btn btn-primary">Sign In</a>
                     </div>
                 `;
@@ -1228,15 +1281,22 @@
             }
         }
 
-        function openNewPostModal() {
+        async function openNewPostModal() {
             if (!currentUser) {
                 window.location.href = 'auth.html';
                 return;
             }
 
-            // Double check plan
-            if (!currentUserProfile || (currentUserProfile.plan !== 'pro' && currentUserProfile.plan !== 'enterprise')) {
-                alert('You need a Pro or Enterprise plan to create posts.');
+            // Re-check post limit
+            await checkPostLimit();
+            if (!canPostToday) {
+                const plan = currentUserProfile?.plan || 'free';
+                const limit = POST_LIMITS[plan] || POST_LIMITS.free;
+                if (limit.period === 'day') {
+                    alert(`You've reached your daily post limit (${limit.count} posts/day).`);
+                } else {
+                    alert(`You've reached your weekly post limit (${limit.count} posts/week). Upgrade to Enterprise for 10 posts/day.`);
+                }
                 return;
             }
 
@@ -1289,6 +1349,21 @@
                 updateCounts();
                 renderPosts();
                 closeNewPostModal();
+
+                // Re-check post limit and update UI
+                await checkPostLimit();
+                if (!canPostToday) {
+                    document.getElementById('newPostBtn').style.display = 'none';
+                    const plan = currentUserProfile?.plan || 'free';
+                    const limit = POST_LIMITS[plan] || POST_LIMITS.free;
+                    const limitMsg = document.getElementById('postLimitMessage');
+                    if (limit.period === 'day') {
+                        limitMsg.textContent = `You've reached your daily post limit (${limit.count} posts/day).`;
+                    } else {
+                        limitMsg.textContent = `You've reached your weekly post limit (${limit.count} posts/week). Upgrade to Enterprise for 10 posts/day.`;
+                    }
+                    document.getElementById('postLimitPrompt').style.display = 'block';
+                }
             } catch (err) {
                 console.error('Failed to create post:', err);
                 alert('Failed to create post: ' + (err.message || 'Unknown error'));
