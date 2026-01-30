@@ -316,6 +316,15 @@
             color: var(--accent-secondary);
         }
 
+        .post-stat.like-btn.liked {
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-secondary);
+        }
+
+        .post-stat.like-btn.liked svg {
+            fill: var(--accent-secondary);
+        }
+
         /* Empty state */
         .empty-state {
             text-align: center;
@@ -1142,8 +1151,30 @@
                 `;
             }).join('');
 
-            // Load reply counts
+            // Load reply counts and check liked status
             loadReplyCounts(filtered.map(p => p.id));
+            if (currentUser) {
+                loadLikedStatus(filtered.map(p => p.id));
+            }
+        }
+
+        async function loadLikedStatus(postIds) {
+            try {
+                const { data } = await supabase
+                    .from('post_likes')
+                    .select('post_id')
+                    .eq('user_id', currentUser.id)
+                    .in('post_id', postIds);
+
+                if (data) {
+                    data.forEach(like => {
+                        const btn = document.querySelector(`.like-btn .upvote-count[data-post-id="${like.post_id}"]`)?.closest('.like-btn');
+                        if (btn) btn.classList.add('liked');
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to load liked status:', e);
+            }
         }
 
         async function loadReplyCounts(postIds) {
@@ -1311,18 +1342,43 @@
             }
 
             try {
-                // Get current upvotes
                 const post = posts.find(p => p.id === postId);
                 if (!post) return;
 
-                const newUpvotes = (post.upvotes || 0) + 1;
+                // Check if already liked
+                const { data: existingLike } = await supabase
+                    .from('post_likes')
+                    .select('id')
+                    .eq('post_id', postId)
+                    .eq('user_id', currentUser.id)
+                    .single();
 
-                const { error } = await supabase
+                let newUpvotes;
+
+                if (existingLike) {
+                    // Unlike - remove the like
+                    await supabase
+                        .from('post_likes')
+                        .delete()
+                        .eq('post_id', postId)
+                        .eq('user_id', currentUser.id);
+
+                    newUpvotes = Math.max(0, (post.upvotes || 0) - 1);
+                } else {
+                    // Like - add the like
+                    const { error } = await supabase
+                        .from('post_likes')
+                        .insert([{ post_id: postId, user_id: currentUser.id }]);
+
+                    if (error) throw error;
+                    newUpvotes = (post.upvotes || 0) + 1;
+                }
+
+                // Update upvotes count in forum_posts
+                await supabase
                     .from('forum_posts')
                     .update({ upvotes: newUpvotes })
                     .eq('id', postId);
-
-                if (error) throw error;
 
                 // Update local data
                 post.upvotes = newUpvotes;
@@ -1330,6 +1386,12 @@
                 // Update UI
                 const upvoteEl = document.querySelector(`.upvote-count[data-post-id="${postId}"]`);
                 if (upvoteEl) upvoteEl.textContent = newUpvotes;
+
+                // Toggle liked state
+                const likeBtn = upvoteEl?.closest('.like-btn');
+                if (likeBtn) {
+                    likeBtn.classList.toggle('liked', !existingLike);
+                }
             } catch (err) {
                 console.error('Failed to upvote:', err);
             }
