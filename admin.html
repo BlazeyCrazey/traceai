@@ -752,6 +752,7 @@
                 renderUsers();
             } catch (err) {
                 console.error('Failed to load users:', err);
+                document.getElementById('usersBody').innerHTML = `<tr><td colspan="4" class="empty-state">Failed to load users. Check RLS policies.</td></tr>`;
             }
         }
 

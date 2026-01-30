@@ -49,6 +49,30 @@ CREATE POLICY "Users can insert own profile"
     FOR INSERT
     WITH CHECK (auth.uid() = id);
 
+-- Policy: Admin can view all profiles
+CREATE POLICY "Admin can view all profiles"
+    ON public.profiles
+    FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'blazerkey106@gmail.com'
+        )
+    );
+
+-- Policy: Admin can update all profiles
+CREATE POLICY "Admin can update all profiles"
+    ON public.profiles
+    FOR UPDATE
+    USING (
+        EXISTS (
+            SELECT 1 FROM auth.users
+            WHERE auth.users.id = auth.uid()
+            AND auth.users.email = 'blazerkey106@gmail.com'
+        )
+    );
+
 -- ============================================
 -- 3. AUTO-CREATE PROFILE ON USER SIGNUP
 -- ============================================
