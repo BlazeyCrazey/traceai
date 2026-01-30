@@ -304,6 +304,18 @@
             height: 16px;
         }
 
+        .post-stat.like-btn {
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all var(--transition-fast);
+        }
+
+        .post-stat.like-btn:hover {
+            background: rgba(99, 102, 241, 0.1);
+            color: var(--accent-secondary);
+        }
+
         /* Empty state */
         .empty-state {
             text-align: center;
@@ -1117,9 +1129,9 @@
                         </div>
                         <div class="post-preview">${escapeHtml(post.content)}</div>
                         <div class="post-stats">
-                            <span class="post-stat">
+                            <span class="post-stat like-btn" onclick="event.stopPropagation(); upvotePost('${post.id}')" title="Like">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
-                                ${post.upvotes}
+                                <span class="upvote-count" data-post-id="${post.id}">${post.upvotes}</span>
                             </span>
                             <span class="post-stat">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -1278,11 +1290,48 @@
 
                 if (error) throw error;
 
+                // Update reply count in list
+                const replyCountEl = document.querySelector(`.reply-count[data-post-id="${postId}"]`);
+                if (replyCountEl) {
+                    replyCountEl.textContent = parseInt(replyCountEl.textContent || 0) + 1;
+                }
+
                 // Reload post detail
                 openPostDetail(postId);
             } catch (err) {
                 console.error('Failed to submit reply:', err);
                 alert('Failed to submit reply. Please try again.');
+            }
+        }
+
+        async function upvotePost(postId) {
+            if (!currentUser) {
+                alert('Please sign in to like posts');
+                return;
+            }
+
+            try {
+                // Get current upvotes
+                const post = posts.find(p => p.id === postId);
+                if (!post) return;
+
+                const newUpvotes = (post.upvotes || 0) + 1;
+
+                const { error } = await supabase
+                    .from('forum_posts')
+                    .update({ upvotes: newUpvotes })
+                    .eq('id', postId);
+
+                if (error) throw error;
+
+                // Update local data
+                post.upvotes = newUpvotes;
+
+                // Update UI
+                const upvoteEl = document.querySelector(`.upvote-count[data-post-id="${postId}"]`);
+                if (upvoteEl) upvoteEl.textContent = newUpvotes;
+            } catch (err) {
+                console.error('Failed to upvote:', err);
             }
         }
 
