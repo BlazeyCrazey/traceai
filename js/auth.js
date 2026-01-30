@@ -295,3 +295,16 @@ function getRedirectUrl(page = 'profile.html') {
     const path = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
     return origin + path + page;
 }
+
+// Admin email
+const ADMIN_EMAIL = 'blazerkey106@gmail.com';
+
+// Check if user is admin and show admin link
+function checkAndShowAdminLink(userEmail) {
+    if (userEmail === ADMIN_EMAIL) {
+        const adminLink = document.getElementById('adminLink');
+        if (adminLink) {
+            adminLink.style.display = 'inline-flex';
+        }
+    }
+}

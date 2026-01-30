@@ -20,34 +20,32 @@
         }
 
         .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 32px;
         }
 
         .admin-header h1 {
             font-size: 28px;
             font-weight: 700;
+            margin-bottom: 8px;
         }
 
-        .admin-stats {
-            display: flex;
+        .admin-header p {
+            color: var(--text-muted);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
+            margin-bottom: 32px;
         }
 
         .stat-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 16px 24px;
-            text-align: center;
-        }
-
-        .stat-card .number {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-secondary);
+            padding: 20px;
         }
 
         .stat-card .label {
@@ -55,6 +53,34 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-card .number.accent {
+            color: var(--accent-secondary);
+        }
+
+        .stat-card .breakdown {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+        }
+
+        .stat-card .breakdown span {
+            color: var(--text-muted);
+        }
+
+        .stat-card .breakdown strong {
+            color: var(--text-secondary);
         }
 
         /* Tabs */
@@ -76,6 +102,9 @@
             border-bottom: 2px solid transparent;
             margin-bottom: -1px;
             transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .admin-tab:hover {
@@ -87,50 +116,136 @@
             border-bottom-color: var(--accent-primary);
         }
 
-        /* Submissions list */
-        .submissions-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .admin-tab svg {
+            width: 16px;
+            height: 16px;
         }
 
-        .submission-card {
+        .tab-badge {
+            background: var(--accent-primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 100px;
+        }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Table styles */
+        .data-table {
+            width: 100%;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 20px;
-            transition: all var(--transition-fast);
+            overflow: hidden;
         }
 
-        .submission-card:hover {
-            border-color: var(--border-light);
+        .data-table th,
+        .data-table td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .submission-card.unread {
-            border-left: 3px solid var(--accent-primary);
-        }
-
-        .submission-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .submission-title {
-            font-size: 16px;
+        .data-table th {
+            font-size: 12px;
             font-weight: 600;
-            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
         }
 
-        .submission-meta {
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .data-table tr:hover td {
+            background: var(--bg-hover);
+        }
+
+        .data-table td {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* User row */
+        .user-cell {
             display: flex;
+            align-items: center;
             gap: 12px;
-            font-size: 13px;
+        }
+
+        .user-cell img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .user-cell .name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .user-cell .email {
+            font-size: 12px;
             color: var(--text-muted);
         }
 
-        .submission-badge {
+        /* Plan badges */
+        .plan-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            border-radius: 100px;
+        }
+
+        .plan-badge.free {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+        }
+
+        .plan-badge.pro {
+            background: rgba(139, 92, 246, 0.15);
+            color: #a78bfa;
+        }
+
+        .plan-badge.enterprise {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+        }
+
+        /* Priority badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-radius: 4px;
+        }
+
+        .priority-badge svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        /* Subject badges */
+        .subject-badge {
             display: inline-block;
             padding: 3px 10px;
             font-size: 11px;
@@ -140,31 +255,13 @@
             border-radius: 100px;
         }
 
-        .submission-badge.general { background: var(--bg-tertiary); color: var(--text-secondary); }
-        .submission-badge.support { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-        .submission-badge.feature { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
-        .submission-badge.bug { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-        .submission-badge.enterprise { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-        .submission-badge.partnership { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        .submission-badge.account { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
-
-        .submission-message {
-            font-size: 14px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-            white-space: pre-wrap;
-        }
-
-        .submission-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .submission-actions .btn {
-            padding: 6px 12px;
-            font-size: 12px;
-        }
+        .subject-badge.general { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .subject-badge.support { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .subject-badge.feature { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+        .subject-badge.bug { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        .subject-badge.enterprise { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .subject-badge.partnership { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .subject-badge.account { background: rgba(236, 72, 153, 0.15); color: #f472b6; }
 
         /* Status badges */
         .status-badge {
@@ -175,6 +272,14 @@
             font-size: 11px;
             font-weight: 600;
             border-radius: 100px;
+        }
+
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
         }
 
         .status-badge.unread {
@@ -192,12 +297,81 @@
             color: var(--success);
         }
 
-        .status-badge::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: currentColor;
+        /* Category badges */
+        .category-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: 4px;
+        }
+
+        .category-badge.general { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .category-badge.showcase { background: rgba(139, 92, 246, 0.15); color: #a78bfa; }
+        .category-badge.help { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+        .category-badge.feedback { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        .category-badge.tutorials { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+        /* Pinned indicator */
+        .pinned-indicator {
+            color: var(--accent-secondary);
+        }
+
+        /* Action buttons */
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .action-btn:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .action-btn.primary {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            opacity: 0.9;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 6px;
+        }
+
+        /* Plan select */
+        .plan-select {
+            padding: 6px 10px;
+            font-size: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Message preview */
+        .message-preview {
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Empty state */
@@ -257,6 +431,47 @@
             animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
+
+        /* Filter bar */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 12px;
+            font-size: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 100px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .filter-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .data-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
@@ -274,6 +489,13 @@
                     <circle cx="20" cy="20" r="4" fill="currentColor"/>
                 </svg>
                 <span>TraceAI</span>
+            </a>
+            <a href="admin.html" class="btn btn-ghost" style="margin-left: 16px; font-size: 13px; padding: 6px 12px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;margin-right:6px">
+                    <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
+                    <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+                </svg>
+                Admin
             </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
@@ -317,31 +539,133 @@
     <div class="admin-page" id="adminContent" style="display:none">
         <div class="admin-container">
             <div class="admin-header">
-                <h1>Contact Submissions</h1>
-                <div class="admin-stats">
-                    <div class="stat-card">
-                        <div class="number" id="unreadCount">0</div>
-                        <div class="label">Unread</div>
+                <h1>Admin Dashboard</h1>
+                <p>Manage users, subscriptions, and content</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="label">Total Users</div>
+                    <div class="number" id="totalUsers">0</div>
+                    <div class="breakdown">
+                        <span>Free: <strong id="freeUsers">0</strong></span>
+                        <span>Pro: <strong id="proUsers">0</strong></span>
+                        <span>Enterprise: <strong id="enterpriseUsers">0</strong></span>
                     </div>
-                    <div class="stat-card">
-                        <div class="number" id="totalCount">0</div>
-                        <div class="label">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Contact Messages</div>
+                    <div class="number" id="totalContacts">0</div>
+                    <div class="breakdown">
+                        <span>Unread: <strong id="unreadContacts">0</strong></span>
+                        <span>Priority: <strong id="priorityContacts">0</strong></span>
                     </div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Forum Posts</div>
+                    <div class="number" id="totalPosts">0</div>
+                    <div class="breakdown">
+                        <span>Pinned: <strong id="pinnedPosts">0</strong></span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Forum Replies</div>
+                    <div class="number" id="totalReplies">0</div>
                 </div>
             </div>
 
+            <!-- Tabs -->
             <div class="admin-tabs">
-                <button class="admin-tab active" data-filter="all">All</button>
-                <button class="admin-tab" data-filter="unread">Unread</button>
-                <button class="admin-tab" data-filter="read">Read</button>
-                <button class="admin-tab" data-filter="resolved">Resolved</button>
+                <button class="admin-tab active" data-tab="users">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+                    Users
+                </button>
+                <button class="admin-tab" data-tab="contacts">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    Contacts
+                    <span class="tab-badge" id="unreadBadge" style="display:none">0</span>
+                </button>
+                <button class="admin-tab" data-tab="forum">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                    Forum
+                </button>
             </div>
 
-            <div class="submissions-list" id="submissionsList">
-                <div class="loading-state">
-                    <div class="loading-spinner"></div>
-                    <p>Loading submissions...</p>
+            <!-- Users Tab -->
+            <div class="tab-content active" id="usersTab">
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="free">Free</button>
+                    <button class="filter-btn" data-filter="pro">Pro</button>
+                    <button class="filter-btn" data-filter="enterprise">Enterprise</button>
                 </div>
+                <table class="data-table" id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Plan</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersBody">
+                        <tr><td colspan="4" class="loading-state"><div class="loading-spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Contacts Tab -->
+            <div class="tab-content" id="contactsTab">
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="unread">Unread</button>
+                    <button class="filter-btn" data-filter="priority">Priority</button>
+                    <button class="filter-btn" data-filter="resolved">Resolved</button>
+                </div>
+                <table class="data-table" id="contactsTable">
+                    <thead>
+                        <tr>
+                            <th>Subject</th>
+                            <th>Title</th>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contactsBody">
+                        <tr><td colspan="6" class="loading-state"><div class="loading-spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Forum Tab -->
+            <div class="tab-content" id="forumTab">
+                <div class="filter-bar">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pinned">Pinned</button>
+                    <button class="filter-btn" data-filter="general">General</button>
+                    <button class="filter-btn" data-filter="showcase">Showcase</button>
+                    <button class="filter-btn" data-filter="help">Help</button>
+                    <button class="filter-btn" data-filter="feedback">Feedback</button>
+                    <button class="filter-btn" data-filter="tutorials">Tutorials</button>
+                </div>
+                <table class="data-table" id="forumTable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Replies</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="forumBody">
+                        <tr><td colspan="6" class="loading-state"><div class="loading-spinner"></div></td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -350,8 +674,12 @@
     <script src="js/auth.js"></script>
     <script>
         const ADMIN_EMAIL = 'blazerkey106@gmail.com';
-        let submissions = [];
-        let currentFilter = 'all';
+        let users = [];
+        let contacts = [];
+        let posts = [];
+        let currentUserFilter = 'all';
+        let currentContactFilter = 'all';
+        let currentForumFilter = 'all';
 
         // Check access and load data
         (async function init() {
@@ -377,21 +705,116 @@
             document.getElementById('loadingState').style.display = 'none';
             document.getElementById('adminContent').style.display = 'block';
 
-            // Load submissions
-            await loadSubmissions();
+            // Load all data
+            await Promise.all([
+                loadUsers(),
+                loadContacts(),
+                loadPosts()
+            ]);
 
-            // Setup tab filters
+            // Setup tabs
             document.querySelectorAll('.admin-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
                     document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                     this.classList.add('active');
-                    currentFilter = this.dataset.filter;
-                    renderSubmissions();
+                    document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
                 });
             });
+
+            // Setup filters
+            setupFilters('usersTab', (filter) => { currentUserFilter = filter; renderUsers(); });
+            setupFilters('contactsTab', (filter) => { currentContactFilter = filter; renderContacts(); });
+            setupFilters('forumTab', (filter) => { currentForumFilter = filter; renderPosts(); });
         })();
 
-        async function loadSubmissions() {
+        function setupFilters(tabId, callback) {
+            document.querySelectorAll(`#${tabId} .filter-btn`).forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll(`#${tabId} .filter-btn`).forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    callback(this.dataset.filter);
+                });
+            });
+        }
+
+        // Load Users
+        async function loadUsers() {
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                users = data || [];
+                updateUserStats();
+                renderUsers();
+            } catch (err) {
+                console.error('Failed to load users:', err);
+            }
+        }
+
+        function updateUserStats() {
+            const free = users.filter(u => u.plan === 'free').length;
+            const pro = users.filter(u => u.plan === 'pro').length;
+            const enterprise = users.filter(u => u.plan === 'enterprise').length;
+
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('freeUsers').textContent = free;
+            document.getElementById('proUsers').textContent = pro;
+            document.getElementById('enterpriseUsers').textContent = enterprise;
+        }
+
+        function renderUsers() {
+            const tbody = document.getElementById('usersBody');
+            let filtered = users;
+
+            if (currentUserFilter !== 'all') {
+                filtered = users.filter(u => u.plan === currentUserFilter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="empty-state">No users found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(u => `
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <img src="${u.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.email}`}" alt="">
+                            <div>
+                                <div class="name">${escapeHtml(u.display_name || 'Unknown')}</div>
+                                <div class="email">${escapeHtml(u.email || '')}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="plan-badge ${u.plan}">${u.plan}</span></td>
+                    <td>${formatDate(u.created_at)}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <select class="plan-select" onchange="changeUserPlan('${u.id}', this.value)">
+                                <option value="free" ${u.plan === 'free' ? 'selected' : ''}>Free</option>
+                                <option value="pro" ${u.plan === 'pro' ? 'selected' : ''}>Pro</option>
+                                <option value="enterprise" ${u.plan === 'enterprise' ? 'selected' : ''}>Enterprise</option>
+                            </select>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function changeUserPlan(userId, newPlan) {
+            await supabase.from('profiles').update({ plan: newPlan }).eq('id', userId);
+            const user = users.find(u => u.id === userId);
+            if (user) user.plan = newPlan;
+            updateUserStats();
+            renderUsers();
+        }
+
+        // Load Contacts
+        async function loadContacts() {
             try {
                 const { data, error } = await supabase
                     .from('contact_submissions')
@@ -399,110 +822,181 @@
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
-
-                submissions = data || [];
-                updateStats();
-                renderSubmissions();
+                contacts = data || [];
+                updateContactStats();
+                renderContacts();
             } catch (err) {
-                console.error('Failed to load submissions:', err);
-                document.getElementById('submissionsList').innerHTML = `
-                    <div class="empty-state">
-                        <p>Failed to load submissions. Please refresh the page.</p>
-                    </div>
-                `;
+                console.error('Failed to load contacts:', err);
             }
         }
 
-        function updateStats() {
-            const unread = submissions.filter(s => s.status === 'unread').length;
-            document.getElementById('unreadCount').textContent = unread;
-            document.getElementById('totalCount').textContent = submissions.length;
+        function updateContactStats() {
+            const unread = contacts.filter(c => c.status === 'unread').length;
+            const priority = contacts.filter(c => c.is_priority).length;
+
+            document.getElementById('totalContacts').textContent = contacts.length;
+            document.getElementById('unreadContacts').textContent = unread;
+            document.getElementById('priorityContacts').textContent = priority;
+
+            const badge = document.getElementById('unreadBadge');
+            if (unread > 0) {
+                badge.textContent = unread;
+                badge.style.display = 'inline';
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
-        function renderSubmissions() {
-            const list = document.getElementById('submissionsList');
+        function renderContacts() {
+            const tbody = document.getElementById('contactsBody');
+            let filtered = contacts;
 
-            let filtered = submissions;
-            if (currentFilter !== 'all') {
-                filtered = submissions.filter(s => s.status === currentFilter);
+            if (currentContactFilter === 'unread') {
+                filtered = contacts.filter(c => c.status === 'unread');
+            } else if (currentContactFilter === 'priority') {
+                filtered = contacts.filter(c => c.is_priority);
+            } else if (currentContactFilter === 'resolved') {
+                filtered = contacts.filter(c => c.status === 'resolved');
             }
 
             if (filtered.length === 0) {
-                list.innerHTML = `
-                    <div class="empty-state">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
-                        </svg>
-                        <p>No ${currentFilter === 'all' ? '' : currentFilter + ' '}submissions</p>
-                    </div>
-                `;
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No messages found</td></tr>`;
                 return;
             }
 
-            list.innerHTML = filtered.map(s => `
-                <div class="submission-card ${s.status === 'unread' ? 'unread' : ''}" data-id="${s.id}">
-                    <div class="submission-header">
-                        <div>
-                            <div class="submission-title">${escapeHtml(s.title)}</div>
-                            <div class="submission-meta">
-                                <span class="submission-badge ${s.subject}">${s.subject}</span>
-                                <span>${formatDate(s.created_at)}</span>
-                            </div>
+            tbody.innerHTML = filtered.map(c => `
+                <tr>
+                    <td>
+                        <span class="subject-badge ${c.subject}">${c.subject}</span>
+                        ${c.is_priority ? `<span class="priority-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>Priority</span>` : ''}
+                    </td>
+                    <td>${escapeHtml(c.title)}</td>
+                    <td><div class="message-preview">${escapeHtml(c.message)}</div></td>
+                    <td><span class="status-badge ${c.status}">${c.status}</span></td>
+                    <td>${formatDate(c.created_at)}</td>
+                    <td>
+                        <div class="actions-cell">
+                            ${c.status === 'unread' ? `<button class="action-btn" onclick="updateContactStatus('${c.id}', 'read')">Mark Read</button>` : ''}
+                            ${c.status !== 'resolved' ? `<button class="action-btn" onclick="updateContactStatus('${c.id}', 'resolved')">Resolve</button>` : ''}
+                            <button class="action-btn danger" onclick="deleteContact('${c.id}')">Delete</button>
                         </div>
-                        <span class="status-badge ${s.status}">${s.status}</span>
-                    </div>
-                    <div class="submission-message">${escapeHtml(s.message)}</div>
-                    <div class="submission-actions">
-                        ${s.status === 'unread' ? `<button class="btn btn-primary" onclick="updateStatus('${s.id}', 'read')">Mark Read</button>` : ''}
-                        ${s.status !== 'resolved' ? `<button class="btn btn-outline" onclick="updateStatus('${s.id}', 'resolved')">Mark Resolved</button>` : ''}
-                        <button class="btn btn-ghost" onclick="deleteSubmission('${s.id}')">Delete</button>
-                    </div>
-                </div>
+                    </td>
+                </tr>
             `).join('');
         }
 
-        async function updateStatus(id, newStatus) {
+        async function updateContactStatus(id, status) {
+            await supabase.from('contact_submissions').update({ status }).eq('id', id);
+            const contact = contacts.find(c => c.id === id);
+            if (contact) contact.status = status;
+            updateContactStats();
+            renderContacts();
+        }
+
+        async function deleteContact(id) {
+            if (!confirm('Delete this message?')) return;
+            await supabase.from('contact_submissions').delete().eq('id', id);
+            contacts = contacts.filter(c => c.id !== id);
+            updateContactStats();
+            renderContacts();
+        }
+
+        // Load Posts
+        async function loadPosts() {
             try {
-                const { error } = await supabase
-                    .from('contact_submissions')
-                    .update({ status: newStatus })
-                    .eq('id', id);
+                const { data, error } = await supabase
+                    .from('forum_posts')
+                    .select(`*, profiles:user_id (display_name, avatar_url)`)
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
+                posts = data || [];
 
-                // Update local data
-                const submission = submissions.find(s => s.id === id);
-                if (submission) submission.status = newStatus;
+                // Load reply counts
+                const { data: replies } = await supabase.from('forum_replies').select('post_id');
+                const replyCounts = {};
+                (replies || []).forEach(r => {
+                    replyCounts[r.post_id] = (replyCounts[r.post_id] || 0) + 1;
+                });
+                posts.forEach(p => p.reply_count = replyCounts[p.id] || 0);
 
-                updateStats();
-                renderSubmissions();
+                updatePostStats();
+                renderPosts();
             } catch (err) {
-                console.error('Failed to update status:', err);
-                alert('Failed to update status');
+                console.error('Failed to load posts:', err);
             }
         }
 
-        async function deleteSubmission(id) {
-            if (!confirm('Are you sure you want to delete this submission?')) return;
+        function updatePostStats() {
+            const pinned = posts.filter(p => p.is_pinned).length;
+            const totalReplies = posts.reduce((sum, p) => sum + (p.reply_count || 0), 0);
 
-            try {
-                const { error } = await supabase
-                    .from('contact_submissions')
-                    .delete()
-                    .eq('id', id);
-
-                if (error) throw error;
-
-                submissions = submissions.filter(s => s.id !== id);
-                updateStats();
-                renderSubmissions();
-            } catch (err) {
-                console.error('Failed to delete:', err);
-                alert('Failed to delete submission');
-            }
+            document.getElementById('totalPosts').textContent = posts.length;
+            document.getElementById('pinnedPosts').textContent = pinned;
+            document.getElementById('totalReplies').textContent = totalReplies;
         }
 
+        function renderPosts() {
+            const tbody = document.getElementById('forumBody');
+            let filtered = posts;
+
+            if (currentForumFilter === 'pinned') {
+                filtered = posts.filter(p => p.is_pinned);
+            } else if (currentForumFilter !== 'all') {
+                filtered = posts.filter(p => p.category === currentForumFilter);
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="empty-state">No posts found</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(p => `
+                <tr>
+                    <td>
+                        ${p.is_pinned ? '<span class="pinned-indicator" title="Pinned">📌</span> ' : ''}
+                        ${escapeHtml(p.title)}
+                    </td>
+                    <td>
+                        <div class="user-cell">
+                            <img src="${p.profiles?.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`}" alt="">
+                            <span>${escapeHtml(p.profiles?.display_name || 'Unknown')}</span>
+                        </div>
+                    </td>
+                    <td><span class="category-badge ${p.category}">${p.category}</span></td>
+                    <td>${p.reply_count || 0}</td>
+                    <td>${formatDate(p.created_at)}</td>
+                    <td>
+                        <div class="actions-cell">
+                            <button class="action-btn ${p.is_pinned ? 'primary' : ''}" onclick="togglePin('${p.id}', ${!p.is_pinned})">
+                                ${p.is_pinned ? 'Unpin' : 'Pin'}
+                            </button>
+                            <button class="action-btn danger" onclick="deletePost('${p.id}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function togglePin(id, pinned) {
+            await supabase.from('forum_posts').update({ is_pinned: pinned }).eq('id', id);
+            const post = posts.find(p => p.id === id);
+            if (post) post.is_pinned = pinned;
+            updatePostStats();
+            renderPosts();
+        }
+
+        async function deletePost(id) {
+            if (!confirm('Delete this post and all its replies?')) return;
+            await supabase.from('forum_posts').delete().eq('id', id);
+            posts = posts.filter(p => p.id !== id);
+            updatePostStats();
+            renderPosts();
+        }
+
+        // Utilities
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
@@ -521,7 +1015,7 @@
             if (diffHours < 24) return `${diffHours}h ago`;
             if (diffDays < 7) return `${diffDays}d ago`;
 
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
     </script>
 </body>
