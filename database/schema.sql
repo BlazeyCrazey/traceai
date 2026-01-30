@@ -21,6 +21,13 @@ CREATE TABLE IF NOT EXISTS public.profiles (
     github_url TEXT,
     website_url TEXT,
 
+    -- Moderation
+    is_muted BOOLEAN DEFAULT false,
+    is_banned BOOLEAN DEFAULT false,
+    is_email_banned BOOLEAN DEFAULT false,
+    is_ip_banned BOOLEAN DEFAULT false,
+    ban_reason TEXT,
+
     -- Timestamps
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -349,6 +356,38 @@ CREATE POLICY "Users can update own replies"
 -- Policy: Users can delete their own replies
 CREATE POLICY "Users can delete own replies"
     ON public.forum_replies
+    FOR DELETE
+    USING (auth.uid() = user_id);
+
+-- ============================================
+-- 10. POST LIKES TABLE (for tracking unique likes)
+-- ============================================
+CREATE TABLE IF NOT EXISTS public.post_likes (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    post_id UUID REFERENCES public.forum_posts(id) ON DELETE CASCADE NOT NULL,
+    user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(post_id, user_id)
+);
+
+-- Enable RLS for post_likes
+ALTER TABLE public.post_likes ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Anyone can view likes
+CREATE POLICY "Anyone can view likes"
+    ON public.post_likes
+    FOR SELECT
+    USING (true);
+
+-- Policy: Authenticated users can like posts
+CREATE POLICY "Users can like posts"
+    ON public.post_likes
+    FOR INSERT
+    WITH CHECK (auth.uid() = user_id);
+
+-- Policy: Users can remove their own likes
+CREATE POLICY "Users can unlike posts"
+    ON public.post_likes
     FOR DELETE
     USING (auth.uid() = user_id);
 

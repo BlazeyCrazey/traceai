@@ -613,7 +613,16 @@
                 const plan = currentUserProfile?.plan || 'free';
                 const canContact = plan === 'pro' || plan === 'enterprise';
 
-                if (canContact) {
+                // Check if user is muted
+                if (currentUserProfile?.is_muted) {
+                    document.getElementById('upgradePrompt').style.display = 'block';
+                    document.getElementById('contactFormEl').style.display = 'none';
+                    document.getElementById('formTitle').style.display = 'none';
+                    document.querySelector('#upgradePrompt h3').textContent = 'Account Muted';
+                    document.querySelector('#upgradePrompt p').textContent = 'Your account has been muted. You cannot submit contact requests.';
+                    document.querySelector('#upgradePrompt .btn-primary').style.display = 'none';
+                    document.querySelector('#upgradePrompt .btn-ghost').style.display = 'none';
+                } else if (canContact) {
                     // Show form
                     document.getElementById('contactFormEl').style.display = 'block';
                     document.getElementById('formTitle').style.display = 'block';
@@ -666,6 +675,12 @@
         // Form submit handler
         document.getElementById('contactFormEl').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            // Check if user is muted
+            if (currentUserProfile?.is_muted) {
+                alert('Your account has been muted. You cannot submit contact requests.');
+                return;
+            }
 
             const title = document.getElementById('contactTitle').value.trim();
             const subject = document.getElementById('contactSubject').value;

@@ -1254,15 +1254,23 @@
                 console.error('Failed to load replies:', e);
             }
 
-            // All logged-in users can reply
+            // All logged-in users can reply (unless muted)
             let replyForm = '';
             if (currentUser) {
-                replyForm = `
-                    <div class="reply-form">
-                        <textarea id="replyContent" class="form-input" placeholder="Write a reply..."></textarea>
-                        <button class="btn btn-primary" onclick="submitReply('${postId}')">Post Reply</button>
-                    </div>
-                `;
+                if (currentUserProfile?.is_muted) {
+                    replyForm = `
+                        <div class="login-prompt" style="margin-top:20px">
+                            <p style="color: var(--error)">Your account has been muted. You cannot reply to posts.</p>
+                        </div>
+                    `;
+                } else {
+                    replyForm = `
+                        <div class="reply-form">
+                            <textarea id="replyContent" class="form-input" placeholder="Write a reply..."></textarea>
+                            <button class="btn btn-primary" onclick="submitReply('${postId}')">Post Reply</button>
+                        </div>
+                    `;
+                }
             } else {
                 replyForm = `
                     <div class="login-prompt" style="margin-top:20px">
@@ -1304,6 +1312,12 @@
         }
 
         async function submitReply(postId) {
+            // Check if user is muted
+            if (currentUserProfile?.is_muted) {
+                alert('Your account has been muted. You cannot reply to posts.');
+                return;
+            }
+
             const content = document.getElementById('replyContent').value.trim();
             if (!content) {
                 alert('Please enter a reply');
@@ -1403,6 +1417,12 @@
                 return;
             }
 
+            // Check if user is muted
+            if (currentUserProfile?.is_muted) {
+                alert('Your account has been muted. You cannot create new posts.');
+                return;
+            }
+
             // Re-check post limit
             await checkPostLimit();
             if (!canPostToday) {
@@ -1428,6 +1448,13 @@
         }
 
         async function createPost() {
+            // Check if user is muted
+            if (currentUserProfile?.is_muted) {
+                alert('Your account has been muted. You cannot create new posts.');
+                closeNewPostModal();
+                return;
+            }
+
             const category = document.getElementById('postCategory').value;
             const title = document.getElementById('postTitle').value.trim();
             const content = document.getElementById('postContent').value.trim();
