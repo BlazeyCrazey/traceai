@@ -683,49 +683,58 @@
 
         // Check access and load data
         (async function init() {
-            const session = await getSession();
+            try {
+                const session = await getSession();
 
-            if (!session) {
-                window.location.href = 'auth.html';
-                return;
-            }
+                if (!session) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
 
-            const user = session.user;
-            const meta = user.user_metadata || {};
-            document.getElementById('navAvatarImg').src = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+                const user = session.user;
+                console.log('Admin check - User email:', user.email, 'Admin email:', ADMIN_EMAIL);
 
-            // Check if admin
-            if (user.email !== ADMIN_EMAIL) {
+                const meta = user.user_metadata || {};
+                document.getElementById('navAvatarImg').src = meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`;
+
+                // Check if admin
+                if (user.email !== ADMIN_EMAIL) {
+                    console.log('Access denied - not admin');
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('accessDenied').style.display = 'block';
+                    return;
+                }
+
+                console.log('Admin access granted');
+                // Show admin content
                 document.getElementById('loadingState').style.display = 'none';
-                document.getElementById('accessDenied').style.display = 'block';
-                return;
-            }
+                document.getElementById('adminContent').style.display = 'block';
 
-            // Show admin content
-            document.getElementById('loadingState').style.display = 'none';
-            document.getElementById('adminContent').style.display = 'block';
+                // Load all data
+                await Promise.all([
+                    loadUsers(),
+                    loadContacts(),
+                    loadPosts()
+                ]);
 
-            // Load all data
-            await Promise.all([
-                loadUsers(),
-                loadContacts(),
-                loadPosts()
-            ]);
-
-            // Setup tabs
-            document.querySelectorAll('.admin-tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    this.classList.add('active');
-                    document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+                // Setup tabs
+                document.querySelectorAll('.admin-tab').forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+                        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                        this.classList.add('active');
+                        document.getElementById(this.dataset.tab + 'Tab').classList.add('active');
+                    });
                 });
-            });
 
-            // Setup filters
-            setupFilters('usersTab', (filter) => { currentUserFilter = filter; renderUsers(); });
-            setupFilters('contactsTab', (filter) => { currentContactFilter = filter; renderContacts(); });
-            setupFilters('forumTab', (filter) => { currentForumFilter = filter; renderPosts(); });
+                // Setup filters
+                setupFilters('usersTab', (filter) => { currentUserFilter = filter; renderUsers(); });
+                setupFilters('contactsTab', (filter) => { currentContactFilter = filter; renderContacts(); });
+                setupFilters('forumTab', (filter) => { currentForumFilter = filter; renderPosts(); });
+            } catch (err) {
+                console.error('Admin init error:', err);
+                document.getElementById('loadingState').innerHTML = '<div class="loading-state"><p>Error: ' + err.message + '</p></div>';
+            }
         })();
 
         function setupFilters(tabId, callback) {
